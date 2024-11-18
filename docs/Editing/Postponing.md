@@ -79,7 +79,7 @@ This facility is currently only available in Tasks query search results.
 
 One of these reasons:
 
-- The task status type [[Status Types|status type]] is `DONE`, `CANCELLED` or `NON_TASK`.
+- The task status stage [[Status Stages|status stage]] is `DONE`, `CANCELLED` or `NON_TASK`.
 - The task does has no [[Dates#Due date|due]], [[Dates#Scheduled date|scheduled]] or [[Dates#Start date|start]] date.
 - The task has at least one date field with an invalid date value.
 - The `hide postpone button` instruction was used.

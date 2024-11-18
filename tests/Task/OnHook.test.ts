@@ -4,10 +4,10 @@
 import moment from 'moment';
 import { verifyAll } from 'approvals/lib/Providers/Jest/JestApprovals';
 import { Status } from '../../src/Statuses/Status';
-import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../src/Statuses/StatusConfiguration';
 import { fromLine, toMarkdown } from '../TestingTools/TestHelpers';
 import type { Task } from '../../src/Task/Task';
-import { OnCompletion, handleOnCompletion, parseOnCompletionValue } from '../../src/Task/OnCompletion';
+import { OnHook, handleOnHook, parseOnHookValue } from '../../src/Task/OnHook';
 
 window.moment = moment;
 
@@ -21,44 +21,44 @@ afterEach(() => {
     // resetSettings();
 });
 
-export function applyStatusAndOnCompletionAction(task: Task, newStatus: Status) {
+export function applyStatusAndOnHookAction(task: Task, newStatus: Status) {
     const tasks = task.handleNewStatus(newStatus);
-    return handleOnCompletion(task, tasks);
+    return handleOnHook(task, tasks);
 }
 
 function makeTask(line: string) {
     return fromLine({ line });
 }
 
-describe('OnCompletion - parsing', () => {
-    function checkParseOnCompletionValue(input: string, expected: OnCompletion) {
-        expect(parseOnCompletionValue(input)).toEqual(expected);
+describe('OnHook - parsing', () => {
+    function checkParseOnHookValue(input: string, expected: OnHook) {
+        expect(parseOnHookValue(input)).toEqual(expected);
     }
 
     const deletes = ['delete', 'DELETE', ' delete '];
-    it.each(deletes)('should parse "%s" as OnCompletion.Delete', (input: string) => {
-        checkParseOnCompletionValue(input, OnCompletion.Delete);
+    it.each(deletes)('should parse "%s" as OnHook.Delete', (input: string) => {
+        checkParseOnHookValue(input, OnHook.Delete);
     });
 
     const keeps = ['keep', 'KEEP', ' keep '];
-    it.each(keeps)('should parse "%s" as OnCompletion.Keep', (input: string) => {
-        checkParseOnCompletionValue(input, OnCompletion.Keep);
+    it.each(keeps)('should parse "%s" as OnHook.Keep', (input: string) => {
+        checkParseOnHookValue(input, OnHook.Keep);
     });
 
     const ignores = ['', 'unknown'];
-    it.each(ignores)('should parse "%s" as OnCompletion.Ignore', (input: string) => {
-        checkParseOnCompletionValue(input, OnCompletion.Ignore);
+    it.each(ignores)('should parse "%s" as OnHook.Ignore', (input: string) => {
+        checkParseOnHookValue(input, OnHook.Ignore);
     });
 });
 
-describe('OnCompletion - cases where all tasks are retained', () => {
+describe('OnHook - cases where all tasks are retained', () => {
     it('should not delete an already-done task', () => {
         // Arrange
         const line = '- [x] An already-DONE, non-recurring task 🏁 delete ✅ 2024-02-10';
         const task = makeTask(line);
 
         // Act
-        const returnedTasks = applyStatusAndOnCompletionAction(task, Status.DONE);
+        const returnedTasks = applyStatusAndOnHookAction(task, Status.DONE);
 
         // Assert
         expect(returnedTasks.length).toEqual(1);
@@ -70,7 +70,7 @@ describe('OnCompletion - cases where all tasks are retained', () => {
         const task = makeTask('- [ ] A non-recurring task with no trigger 📅 2024-02-10');
 
         // Act
-        const tasks = applyStatusAndOnCompletionAction(task, Status.DONE);
+        const tasks = applyStatusAndOnHookAction(task, Status.DONE);
 
         // Assert
         expect(toMarkdown(tasks)).toMatchInlineSnapshot(
@@ -83,7 +83,7 @@ describe('OnCompletion - cases where all tasks are retained', () => {
         const task = makeTask('- [ ] A recurring task with no trigger 🔁 every day 📅 2024-02-10');
 
         // Act
-        const tasks = applyStatusAndOnCompletionAction(task, Status.DONE);
+        const tasks = applyStatusAndOnHookAction(task, Status.DONE);
 
         // Assert
         expect(toMarkdown(tasks)).toMatchInlineSnapshot(`
@@ -97,59 +97,59 @@ describe('OnCompletion - cases where all tasks are retained', () => {
         const task = makeTask('- [ ] A recurring task with "delete" Action 🔁 every day 🏁 delete 📅 2024-02-10');
 
         // Act
-        const tasks = applyStatusAndOnCompletionAction(task, Status.IN_PROGRESS);
+        const tasks = applyStatusAndOnHookAction(task, Status.IN_PROGRESS);
 
         // Assert
         expect(tasks.length).toEqual(1);
-        expect(tasks[0].status.type).toEqual(StatusType.IN_PROGRESS);
+        expect(tasks[0].status.stage).toEqual(StatusStage.IN_PROGRESS);
     });
 
     it('should return the task when going from one DONE status to another DONE status', () => {
         // Arrange
-        const done2 = new Status(new StatusConfiguration('X', 'DONE', ' ', true, StatusType.DONE));
+        const done2 = new Status(new StatusConfiguration('Task', 'X', 'DONE', ' ', true, StatusStage.DONE));
         const task = makeTask('- [x] A simple done task with 🏁 delete');
 
         // Act
-        const tasks = applyStatusAndOnCompletionAction(task, done2);
+        const tasks = applyStatusAndOnHookAction(task, done2);
 
         // Assert
         expect(tasks.length).toEqual(1);
         expect(tasks[0].status.symbol).toEqual('X');
-        expect(tasks[0].status.type).toEqual(StatusType.DONE);
+        expect(tasks[0].status.stage).toEqual(StatusStage.DONE);
     });
 
-    it('should return a task featuring the On Completion flag trigger but an empty string Action', () => {
+    it('should return a task featuring the On Hook flag trigger but an empty string Action', () => {
         // Arrange
         const task = makeTask('- [ ] A non-recurring task with');
 
         // Act
-        const tasks = applyStatusAndOnCompletionAction(task, Status.DONE);
+        const tasks = applyStatusAndOnHookAction(task, Status.DONE);
 
         // Assert
         expect(tasks.length).toEqual(1);
     });
 });
 
-describe('OnCompletion - "keep" action', () => {
-    it('should retain a task with "keep" Action upon completion', () => {
+describe('OnHook - "keep" action', () => {
+    it('should retain a task with "keep" Action upon hook', () => {
         // Arrange
         const task = makeTask('- [ ] A non-recurring task with "keep" Action 🏁 keep');
 
         // Act
-        const tasks = applyStatusAndOnCompletionAction(task, Status.DONE);
+        const tasks = applyStatusAndOnHookAction(task, Status.DONE);
 
         // Assert
         expect(tasks.length).toEqual(1);
     });
 });
 
-describe('OnCompletion - "delete" action', () => {
-    it('should retain only the next instance of a recurring task with "delete" Action upon completion', () => {
+describe('OnHook - "delete" action', () => {
+    it('should retain only the next instance of a recurring task with "delete" Action upon hook', () => {
         // Arrange
         const task = makeTask('- [ ] A recurring task with "delete" Action 🔁 every day 🏁 delete 📅 2024-02-10');
 
         // Act
-        const tasks = applyStatusAndOnCompletionAction(task, Status.DONE);
+        const tasks = applyStatusAndOnHookAction(task, Status.DONE);
 
         // Assert
         expect(toMarkdown(tasks)).toMatchInlineSnapshot(
@@ -157,12 +157,12 @@ describe('OnCompletion - "delete" action', () => {
         );
     });
 
-    it('should discard a task with "delete" Action upon completion', () => {
+    it('should discard a task with "delete" Action upon hook', () => {
         // Arrange
         const task = makeTask('- [ ] A non-recurring task with "delete" Action 🏁 delete');
 
         // Act
-        const tasks = applyStatusAndOnCompletionAction(task, Status.DONE);
+        const tasks = applyStatusAndOnHookAction(task, Status.DONE);
 
         // Assert
         expect(tasks.length).toEqual(0);
@@ -228,7 +228,7 @@ function getCases(): ToggleCase[] {
         },
 
         {
-            nextStatus: new Status(new StatusConfiguration('X', 'new status', ' ', false, StatusType.DONE)),
+            nextStatus: new Status(new StatusConfiguration('Task', 'X', 'new status', ' ', false, StatusStage.DONE)),
             line: '- [x] An already-DONE task, changing to Different DONE status 🏁 delete 📅 2024-02-10 ✅ 2024-02-10',
         },
 
@@ -250,24 +250,24 @@ function action(toggleCase: ToggleCase): string {
     const newStatus = toggleCase.nextStatus;
     const task = fromLine({ line: toggleCase.line, path: 'anything.md', precedingHeader: 'heading' });
     const step1 = task.handleNewStatus(newStatus);
-    const step2 = applyStatusAndOnCompletionAction(task, newStatus);
+    const step2 = applyStatusAndOnHookAction(task, newStatus);
     return `
 initial task:
 ${task.toFileLineString()}
 
-=> advances to status [${newStatus.symbol}] and type ${newStatus.type}:
+=> advances to status [${newStatus.symbol}] and type ${newStatus.stage}:
 ${toMarkdown(step1)}
 
-=> which, after any on-completion action, results in:
+=> which, after any on-hook action, results in:
 ${toMarkdown(step2)}
 ----------------------------------------------
 `;
 }
 
-describe('visualise completion-behaviour', () => {
+describe('visualise hook-behaviour', () => {
     it('visualise', () => {
         // List of status and task
         const cases = getCases();
-        verifyAll('checking on completion', cases, (toggleCase) => action(toggleCase));
+        verifyAll('checking on hook', cases, (toggleCase) => action(toggleCase));
     });
 });

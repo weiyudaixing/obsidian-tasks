@@ -172,7 +172,7 @@ export class TaskLineRenderer {
         li.setAttribute('data-task', task.status.symbol.trim()); // Trim to ensure empty attribute for space. Same way as obsidian.
         li.setAttribute('data-line', taskIndex.toString());
         li.setAttribute('data-task-status-name', task.status.name);
-        li.setAttribute('data-task-status-type', task.status.type);
+        li.setAttribute('data-task-status-stage', task.status.stage);
         checkbox.setAttribute('data-line', taskIndex.toString());
 
         if (this.queryLayoutOptions.shortMode) {

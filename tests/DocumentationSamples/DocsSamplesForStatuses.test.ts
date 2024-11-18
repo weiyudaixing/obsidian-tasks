@@ -1,5 +1,5 @@
 import { Status } from '../../src/Statuses/Status';
-import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../src/Statuses/StatusConfiguration';
 import type { StatusCollection, StatusCollectionEntry } from '../../src/Statuses/StatusCollection';
 import * as Themes from '../../src/Config/Themes';
 import { StatusValidator } from '../../src/Statuses/StatusValidator';
@@ -72,9 +72,9 @@ describe('Theme', () => {
     ];
 
     describe.each(themes)('%s', (_: string, statuses: StatusCollection) => {
-        it.each(statuses)('Validate status: "%s", "%s", "%s", "%s"', (symbol, name, nextSymbol, type) => {
+        it.each(statuses)('Validate status: "%s","%s", "%s", "%s", "%s"', (objectClass, symbol, name, nextSymbol, stage) => {
             const statusValidator = new StatusValidator();
-            const entry: StatusCollectionEntry = [symbol, name, nextSymbol, type];
+            const entry: StatusCollectionEntry = [objectClass, symbol, name, nextSymbol, stage];
             expect(statusValidator.validateStatusCollectionEntry(entry)).toEqual([]);
         });
 
@@ -93,13 +93,13 @@ describe('Theme', () => {
 });
 
 describe('Status Transitions', () => {
-    it('status-types', () => {
+    it('status-stages', () => {
         const statuses = [
             Status.TODO,
             Status.IN_PROGRESS,
             Status.DONE,
             Status.CANCELLED,
-            new Status(new StatusConfiguration('~', 'My custom status', ' ', false, StatusType.NON_TASK)),
+            new Status(new StatusConfiguration('Task','~', 'My custom status', ' ', false, StatusStage.NON_TASK)),
         ];
         VerifyStatuses.verifyTransitionsAsMarkdownTable(statuses);
     });

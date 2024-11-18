@@ -110,7 +110,7 @@ function tryBuildTaskDetails(t: object): TaskDetails | null {
         doneDate: null,
         cancelledDate: null,
         recurrence: null,
-        onCompletion: '',
+        onHook: '',
         dependsOn: [],
         id: '',
         tags: [],

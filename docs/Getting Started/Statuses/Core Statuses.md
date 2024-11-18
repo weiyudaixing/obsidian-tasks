@@ -35,7 +35,7 @@ You can edit the 'Todo' core status to make its Next Status Symbol be `/` and en
 
 The only restriction on editing core statuses is that you cannot change their Status Symbols.
 
-You are free to rename them, change their next character, and even change their Status Type, should you wish.
+You are free to rename them, change their next character, and even change their Status Stage, should you wish.
 
 ## Details
 
@@ -43,7 +43,7 @@ And this is how you can use them:
 
 <!-- placeholder to force blank line before included text --><!-- include: DocsSamplesForStatuses.test.DefaultStatuses_core-statuses.approved.md -->
 
-| Status Symbol | Next Status Symbol | Status Name<br>`status.name includes...`<br>`sort by status.name`<br>`group by status.name` | Status Type<br>`status.type is...`<br>`sort by status.type`<br>`group by status.type` | Needs Custom Styling |
+| Status Symbol | Next Status Symbol | Status Name<br>`status.name includes...`<br>`sort by status.name`<br>`group by status.name` | Status Stage<br>`status.stage is...`<br>`sort by status.stage`<br>`group by status.stage` | Needs Custom Styling |
 | ----- | ----- | ----- | ----- | ----- |
 | `space` | `x` | Todo | `TODO` | No |
 | `x` | `space` | Done | `DONE` | No |

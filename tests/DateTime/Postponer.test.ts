@@ -16,7 +16,7 @@ import {
     shouldShowPostponeButton,
 } from '../../src/DateTime/Postponer';
 import { Status } from '../../src/Statuses/Status';
-import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../src/Statuses/StatusConfiguration';
 import type { PostponingFunction } from '../../src/ui/Menus/PostponeMenu';
 import { TaskBuilder } from '../TestingTools/TaskBuilder';
 import type { HappensDate } from '../../src/DateTime/DateFieldTypes';
@@ -96,21 +96,21 @@ describe('postpone - date field choice', () => {
 });
 
 describe('postpone - whether to show button', () => {
-    it('should account for status type', () => {
-        function checkPostponeButtonVisibility(statusType: StatusType, expected: boolean) {
-            const status = new Status(new StatusConfiguration('p', 'Test', 'q', true, statusType));
+    it('should account for status stage', () => {
+        function checkPostponeButtonVisibility(statusStage: StatusStage, expected: boolean) {
+            const status = new Status(new StatusConfiguration('Task','p', 'Test', 'q', true, statusStage));
             const task = new TaskBuilder().dueDate('2023-10-30').status(status).build();
             expect(shouldShowPostponeButton(task)).toEqual(expected);
         }
 
         // Statuses considered as done:
-        checkPostponeButtonVisibility(StatusType.TODO, true);
-        checkPostponeButtonVisibility(StatusType.IN_PROGRESS, true);
+        checkPostponeButtonVisibility(StatusStage.TODO, true);
+        checkPostponeButtonVisibility(StatusStage.IN_PROGRESS, true);
 
         // Statuses considered as not done:
-        checkPostponeButtonVisibility(StatusType.NON_TASK, false);
-        checkPostponeButtonVisibility(StatusType.CANCELLED, false);
-        checkPostponeButtonVisibility(StatusType.DONE, false);
+        checkPostponeButtonVisibility(StatusStage.NON_TASK, false);
+        checkPostponeButtonVisibility(StatusStage.CANCELLED, false);
+        checkPostponeButtonVisibility(StatusStage.DONE, false);
     });
 
     it('should not show button for a task with no dates', () => {

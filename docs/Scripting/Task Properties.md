@@ -31,14 +31,14 @@ For more information, including adding your own customised statuses, see [[Statu
 | ----- | ----- | ----- | ----- | ----- |
 | `task.isDone` | `boolean` | `false` | `boolean` | `false` |
 | `task.status.name` | `string` | `'Todo'` | `string` | `'In Progress'` |
-| `task.status.type` | `string` | `'TODO'` | `string` | `'IN_PROGRESS'` |
-| `task.status.typeGroupText` | `string` | `'%%2%%TODO'` [^commented] | `string` | `'%%1%%IN_PROGRESS'` [^commented] |
+| `task.status.stage` | `string` | `'TODO'` | `string` | `'IN_PROGRESS'` |
+| `task.status.stageGroupText` | `string` | `'%%2%%TODO'` [^commented] | `string` | `'%%1%%IN_PROGRESS'` [^commented] |
 | `task.status.symbol` | `string` | `' '` | `string` | `'/'` |
 | `task.status.nextSymbol` | `string` | `'x'` | `string` | `'x'` |
 
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 
-1. `task.status.typeGroupText` (added in Tasks 4.9.0) is a convenient way to sort status types in to a natural order in custom grouping functions.
+1. `task.status.stageGroupText` (added in Tasks 4.9.0) is a convenient way to sort status stages in to a natural order in custom grouping functions.
 
 ## Values for Dates in Tasks
 

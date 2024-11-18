@@ -23,7 +23,7 @@ export class SetStatus implements TaskEditingInstruction {
             return task.handleNewStatusWithRecurrenceInUsersOrder(this.newStatus);
         }
     }
-
+// TODO FILTER STATUS FOR OBJECT CLASS
     public instructionDisplayName(): string {
         const commonTitle = 'Change status to:';
         return `${commonTitle} [${this.newStatus.symbol}] ${this.newStatus.name}`;

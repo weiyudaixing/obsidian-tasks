@@ -21,15 +21,15 @@ Obsidian may only render the table correctly in Reading Mode.
 
 These are the status values in the Core and Custom statuses sections.
 
-| Status Symbol | Next Status Symbol | Status Name | Status Type | Problems (if any) |
-| ----- | ----- | ----- | ----- | ----- |
-| `space` | `x` | Todo | `TODO` |  |
-| `x` | `space` | Done | `DONE` |  |
-| `/` | `x` | In Progress | `IN_PROGRESS` |  |
-| `-` | `space` | Cancelled | `CANCELLED` |  |
-| `Q` | `A` | Question | `NON_TASK` |  |
-| `A` | `Q` | Answer | `NON_TASK` |  |
-|  |  |  | `TODO` | Empty symbol: this status will be ignored. |
+| Object Class of Status | Status Symbol | Next Status Symbol | Status Name | Status Stage | Problems (if any) |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| Task | `space` | `x` | Todo | `TODO` |  |
+| Task | `x` | `space` | Done | `DONE` |  |
+| Task | `/` | `x` | In Progress | `IN_PROGRESS` |  |
+| Task | `-` | `space` | Cancelled | `CANCELLED` |  |
+| Task | `Q` | `A` | Question | `NON_TASK` |  |
+| Task | `A` | `Q` | Answer | `NON_TASK` |  |
+| Task |  |  |  | `TODO` | Empty symbol: this status will be ignored. |
 
 ## Loaded Settings
 

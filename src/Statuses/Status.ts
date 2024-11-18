@@ -1,4 +1,4 @@
-import { StatusConfiguration, StatusType } from './StatusConfiguration';
+import { StatusConfiguration, StatusStage } from './StatusConfiguration';
 import type { StatusCollectionEntry } from './StatusCollection';
 
 /**
@@ -22,7 +22,7 @@ export class Status {
      * @type {Status}
      * @memberof Status
      */
-    public static readonly DONE: Status = new Status(new StatusConfiguration('x', 'Done', ' ', true, StatusType.DONE));
+    public static readonly DONE: Status = new Status(new StatusConfiguration('Task', 'x', 'Done', ' ', true, StatusStage.DONE));
 
     /**
      * A default status of empty, used when things go wrong.
@@ -31,7 +31,7 @@ export class Status {
      * @type {Status}
      * @memberof Status
      */
-    public static readonly EMPTY: Status = new Status(new StatusConfiguration('', 'EMPTY', '', true, StatusType.EMPTY));
+    public static readonly EMPTY: Status = new Status(new StatusConfiguration('Task','', 'EMPTY', '', true, StatusStage.EMPTY));
 
     /**
      * The default Todo status. Goes to Done when toggled.
@@ -41,7 +41,7 @@ export class Status {
      * @type {Status}
      * @memberof Status
      */
-    public static readonly TODO: Status = new Status(new StatusConfiguration(' ', 'Todo', 'x', true, StatusType.TODO));
+    public static readonly TODO: Status = new Status(new StatusConfiguration('Task',' ', 'Todo', 'x', true, StatusStage.TODO));
 
     /**
      * The default Cancelled status. Goes to Todo when toggled.
@@ -51,7 +51,7 @@ export class Status {
      * @memberof Status
      */
     public static readonly CANCELLED: Status = new Status(
-        new StatusConfiguration('-', 'Cancelled', ' ', true, StatusType.CANCELLED),
+        new StatusConfiguration('Task','-', 'Cancelled', ' ', true, StatusStage.CANCELLED),
     );
 
     /**
@@ -62,7 +62,7 @@ export class Status {
      * @memberof Status
      */
     public static readonly IN_PROGRESS: Status = new Status(
-        new StatusConfiguration('/', 'In Progress', 'x', true, StatusType.IN_PROGRESS),
+        new StatusConfiguration('Task','/', 'In Progress', 'x', true, StatusStage.IN_PROGRESS),
     );
 
     /**
@@ -73,7 +73,29 @@ export class Status {
      * @memberof Status
      */
     public static readonly NON_TASK: Status = new Status(
-        new StatusConfiguration('Q', 'Non-Task', 'A', true, StatusType.NON_TASK),
+        new StatusConfiguration('Question','Q', 'Non-Task', 'A', true, StatusStage.TODO),
+    );
+
+    /**
+     * A sample Archived status. Goes to ARCHIVED when toggled.
+     *
+     * @static
+     * @type {Status}
+     * @memberof Status
+     */
+    public static readonly ARCHIVED: Status = new Status(
+        new StatusConfiguration('Question','A', 'Answered', 'Q', true, StatusStage.DONE),
+    );
+
+    /**
+     * A sample Hook status. Goes to HOOK when toggled.
+     *
+     * @static
+     * @type {Status}
+     * @memberof Status
+     */
+    public static readonly HOOK: Status = new Status(
+        new StatusConfiguration('Question','D', 'Hook', 'D', true, StatusStage.HOOK),
     );
 
     /**
@@ -83,6 +105,16 @@ export class Status {
      * @memberof Status
      */
     public readonly configuration: StatusConfiguration;
+    
+     /**
+     * The class of the task object, e.g. task, question.
+     *
+     * @type {string}
+     * @memberof Status
+     */
+     public get objectClass(): string {
+        return this.configuration.objectClass;
+    }
 
     /**
      * The symbol used between the two square brackets in the markdown task.
@@ -138,45 +170,51 @@ export class Status {
     }
 
     /**
-     * Returns the status type. See {@link StatusType} for details.
+     * Returns the status stage. See {@link StatusStage} for details.
      */
-    public get type(): StatusType {
-        return this.configuration.type;
+    public get stage(): StatusStage {
+        return this.configuration.stage;
     }
 
     /**
-     * Returns the text to be used to represent the {@link StatusType} in group headings.
+     * Returns the text to be used to represent the {@link StatusStage} in group headings.
      *
-     * The status types are in the same order as given by 'group by status.type'.
+     * The status stages are in the same order as given by 'group by status.stage'.
      * This is provided as a convenience for use in custom grouping.
      */
-    public get typeGroupText(): string {
-        const type = this.type;
+    public get stageGroupText(): string {
+        const stage = this.stage;
         let prefix: string;
         // Add a numeric prefix to sort in to a meaningful order for users
-        switch (type) {
-            case StatusType.IN_PROGRESS:
+        switch (stage) {
+            case StatusStage.IN_PROGRESS:
                 prefix = '1';
                 break;
-            case StatusType.TODO:
+            case StatusStage.TODO:
                 prefix = '2';
                 break;
-            case StatusType.DONE:
+            case StatusStage.DONE:
                 prefix = '3';
                 break;
-            case StatusType.CANCELLED:
+            case StatusStage.ARCHIVED:
                 prefix = '4';
                 break;
-            case StatusType.NON_TASK:
+            case StatusStage.CANCELLED:
                 prefix = '5';
                 break;
-            case StatusType.EMPTY:
+            case StatusStage.HOOK:
                 prefix = '6';
+                break;
+            case StatusStage.NON_TASK:
+                prefix = '7';
+                break;
+            case StatusStage.EMPTY:
+                prefix = '8';
                 break;
         }
         // Text inside the %%..%% comments is used to control the sorting in both sorting of tasks and naming of groups.
         // The comments are hidden by Obsidian when the headings are rendered.
-        return `%%${prefix}%%${type}`;
+        return `%%${prefix}%%${stage}`;
     }
 
     /**
@@ -191,35 +229,37 @@ export class Status {
     }
 
     /**
-     * Return the StatusType to use for a symbol, if it is not in the StatusRegistry.
+     * Return the StatusStage to use for a symbol, if it is not in the StatusRegistry.
      * The core symbols are recognised.
-     * Other symbols are treated as StatusType.TODO
+     * Other symbols are treated as StatusStage.TODO
      * @param symbol
      */
-    static getTypeForUnknownSymbol(symbol: string): StatusType {
+    static getStageForUnknownSymbol(symbol: string): StatusStage {
         switch (symbol) {
             case 'x':
             case 'X':
-                return StatusType.DONE;
+                return StatusStage.DONE;
             case '/':
-                return StatusType.IN_PROGRESS;
+                return StatusStage.IN_PROGRESS;
             case '-':
-                return StatusType.CANCELLED;
+                return StatusStage.CANCELLED;
             case '':
-                return StatusType.EMPTY;
+                return StatusStage.EMPTY;
+            case 'N':
+                return StatusStage.ARCHIVED;
             case ' ':
             default:
-                return StatusType.TODO;
+                return StatusStage.TODO;
         }
     }
 
     /**
-     * Convert text that was saved from a StatusType value back to a StatusType.
-     * Returns StatusType.TODO if the string is not valid.
-     * @param statusTypeAsString
+     * Convert text that was saved from a StatusStage value back to a StatusStage.
+     * Returns StatusStage.TODO if the string is not valid.
+     * @param statusStageAsString
      */
-    static getTypeFromStatusTypeString(statusTypeAsString: string): StatusType {
-        return StatusType[statusTypeAsString as keyof typeof StatusType] || StatusType.TODO;
+    static getStageFromStatusStageString(statusStageAsString: string): StatusStage {
+        return StatusStage[statusStageAsString as keyof typeof StatusStage] || StatusStage.TODO;
     }
 
     /**
@@ -228,40 +268,51 @@ export class Status {
      * This can be useful when StatusRegistry does not recognise a symbol,
      * and we do not want to expose the user's data to the Status.EMPTY status.
      *
-     * The type is set to TODO.
+     * The stage is set to TODO.
      * @param unknownSymbol
      */
     static createUnknownStatus(unknownSymbol: string) {
-        return new Status(new StatusConfiguration(unknownSymbol, 'Unknown', 'x', false, StatusType.TODO));
+        return new Status(new StatusConfiguration('Unknown', unknownSymbol, 'Unknown', 'x', false, StatusStage.TODO));
     }
 
     /**
      * Helper function for bulk-importing settings from arrays of strings.
      *
-     * @param imported An array of symbol, name, next symbol, status type
+     * @param imported An array of symbol, name, next symbol, status stage
      */
     static createFromImportedValue(imported: StatusCollectionEntry) {
-        const symbol = imported[0];
-        const type = Status.getTypeFromStatusTypeString(imported[3]);
-        return new Status(new StatusConfiguration(symbol, imported[1], imported[2], false, type));
+        const symbol = imported[1];
+        const stage = Status.getStageFromStatusStageString(imported[4]);
+        return new Status(new StatusConfiguration(imported[0], symbol, imported[2], imported[3], false, stage));
     }
 
     /**
-     * Returns the completion status for a task, this is only supported
+     * Returns the onhook status for a task, this is only supported
      * when the task is done/x.
      *
      * @return {*}  {boolean}
      * @memberof Status
      */
     public isCompleted(): boolean {
-        return this.type === StatusType.DONE;
+        return this.stage === StatusStage.DONE;
+    }
+
+     /**
+     * Returns the Archived status for a task, this is only supported
+     * when the task is archived/x.
+     *
+     * @return {*}  {boolean}
+     * @memberof Status
+     */
+     public isArchived(): boolean {
+        return this.stage === StatusStage.ARCHIVED;
     }
 
     /**
-     * Whether the task status type is {@link CANCELLED}.
+     * Whether the task status stage is {@link CANCELLED}.
      */
     public isCancelled(): boolean {
-        return this.type === StatusType.CANCELLED;
+        return this.stage === StatusStage.CANCELLED;
     }
 
     /**
@@ -273,11 +324,12 @@ export class Status {
      */
     public identicalTo(other: Status): boolean {
         const args: Array<keyof StatusConfiguration> = [
+            'objectClass',
             'symbol',
             'name',
             'nextStatusSymbol',
             'availableAsCommand',
-            'type',
+            'stage',
         ];
         for (const el of args) {
             if (this[el] !== other[el]) return false;
@@ -297,7 +349,7 @@ export class Status {
             `- [${this.symbol}]` + // comment to break line
             ` => [${this.nextStatusSymbol}],` +
             ` name: '${this.name}',` +
-            ` type: '${this.configuration.type}'.` +
+            ` stage: '${this.configuration.stage}'.` +
             `${commandNotice}`
         );
     }

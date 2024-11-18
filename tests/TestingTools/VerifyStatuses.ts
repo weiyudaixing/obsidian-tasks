@@ -7,7 +7,7 @@ import { SearchInfo } from '../../src/Query/SearchInfo';
 import * as FilterParser from '../../src/Query/FilterParser';
 import type { GrouperFunction } from '../../src/Query/Group/Grouper';
 import { StatusField } from '../../src/Query/Filter/StatusField';
-import { StatusTypeField } from '../../src/Query/Filter/StatusTypeField';
+import { StatusStageField } from '../../src/Query/Filter/StatusStageField';
 import { StatusNameField } from '../../src/Query/Filter/StatusNameField';
 import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
 import { getPrintableSymbol } from '../../src/Statuses/StatusSettingsReport';
@@ -19,25 +19,25 @@ function verifyStatusesAsMarkdownTable(statuses: Status[], showQueryInstructions
     // Note: There is very similar code in tabulateStatusSettings() in StatusRegistryReport.ts.
     //       Maybe try unifying the common code one day?
     let statusName = 'Status Name';
-    let statusType = 'Status Type';
+    let statusStage = 'Status Stage';
     if (showQueryInstructions) {
         statusName += '<br>`status.name includes...`<br>`sort by status.name`<br>`group by status.name`';
-        statusType += '<br>`status.type is...`<br>`sort by status.type`<br>`group by status.type`';
+        statusStage += '<br>`status.stage is...`<br>`sort by status.stage`<br>`group by status.stage`';
     }
     const table = new MarkdownTable([
         'Status Symbol',
         'Next Status Symbol',
         statusName,
-        statusType,
+        statusStage,
         'Needs Custom Styling',
     ]);
 
     for (const status of statuses) {
         const statusCharacter = getPrintableSymbol(status.symbol);
         const nextStatusCharacter = getPrintableSymbol(status.nextStatusSymbol);
-        const type = getPrintableSymbol(status.type);
+        const stage = getPrintableSymbol(status.stage);
         const needsCustomStyling = status.symbol !== ' ' && status.symbol !== 'x' ? 'Yes' : 'No';
-        table.addRow([statusCharacter, nextStatusCharacter, status.name, type, needsCustomStyling]);
+        table.addRow([statusCharacter, nextStatusCharacter, status.name, stage, needsCustomStyling]);
     }
     verifyMarkdownForDocs(table.markdown);
 }
@@ -83,9 +83,9 @@ export function verifyStatusesAsDetailedMermaidDiagram(statuses: Status[]) {
 }
 
 export function verifyTransitionsAsMarkdownTable(statuses: Status[]) {
-    const columnNames: string[] = ['Operation and status.type'];
+    const columnNames: string[] = ['Operation and status.stage'];
     statuses.forEach((s) => {
-        const title = s.type;
+        const title = s.stage;
         columnNames.push(title);
     });
 
@@ -114,11 +114,11 @@ export function verifyTransitionsAsMarkdownTable(statuses: Status[]) {
 
     filterAllStatuses(FilterParser.parseFilter('not done')!);
     filterAllStatuses(FilterParser.parseFilter('done')!);
-    filterAllStatuses(FilterParser.parseFilter('status.type is TODO')!);
-    filterAllStatuses(FilterParser.parseFilter('status.type is IN_PROGRESS')!);
-    filterAllStatuses(FilterParser.parseFilter('status.type is DONE')!);
-    filterAllStatuses(FilterParser.parseFilter('status.type is CANCELLED')!);
-    filterAllStatuses(FilterParser.parseFilter('status.type is NON_TASK')!);
+    filterAllStatuses(FilterParser.parseFilter('status.stage is TODO')!);
+    filterAllStatuses(FilterParser.parseFilter('status.stage is IN_PROGRESS')!);
+    filterAllStatuses(FilterParser.parseFilter('status.stage is DONE')!);
+    filterAllStatuses(FilterParser.parseFilter('status.stage is CANCELLED')!);
+    filterAllStatuses(FilterParser.parseFilter('status.stage is NON_TASK')!);
     filterAllStatuses(FilterParser.parseFilter('status.name includes todo')!);
     filterAllStatuses(FilterParser.parseFilter('status.name includes in progress')!);
     filterAllStatuses(FilterParser.parseFilter('status.name includes done')!);
@@ -135,7 +135,7 @@ export function verifyTransitionsAsMarkdownTable(statuses: Status[]) {
     }
 
     showGroupNamesForAllTasks('status', new StatusField().createNormalGrouper().grouper);
-    showGroupNamesForAllTasks('status.type', new StatusTypeField().createNormalGrouper().grouper);
+    showGroupNamesForAllTasks('status.stage', new StatusStageField().createNormalGrouper().grouper);
     showGroupNamesForAllTasks('status.name', new StatusNameField().createNormalGrouper().grouper);
 
     verifyMarkdownForDocs(table.markdown);

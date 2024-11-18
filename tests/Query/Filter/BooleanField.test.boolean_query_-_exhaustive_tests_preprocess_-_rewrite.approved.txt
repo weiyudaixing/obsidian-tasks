@@ -440,13 +440,13 @@ Result:
 
 
 Input:
-'( filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.type) ) OR ( filter by function const date = task.due.moment; return date ? !date.isValid() : false; ) OR ( filter by function task.due.moment?.isSameOrBefore(moment(), 'day') || false ) OR ( filter by function task.urgency.toFixed(2) === 1.95.toFixed(2) ) OR ( filter by function (!task.isRecurring) && task.originalMarkdown.includes('🔁') ) OR ( filter by function task.file.path.toLocaleLowerCase() === 'TASKS RELEASES/4.1.0 RELEASE.MD'.toLocaleLowerCase() ) OR ( filter by function const taskDate = task.due.moment; const now = moment(); return taskDate?.isSame(now, 'day') || ( !taskDate && task.heading?.includes(now.format('YYYY-MM-DD')) ) || false ) OR ( filter by function const wanted = '#context/home'; return task.heading?.includes(wanted) || task.tags.find( (tag) => tag === wanted ) && true || false; )'
+'( filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.stage) ) OR ( filter by function const date = task.due.moment; return date ? !date.isValid() : false; ) OR ( filter by function task.due.moment?.isSameOrBefore(moment(), 'day') || false ) OR ( filter by function task.urgency.toFixed(2) === 1.95.toFixed(2) ) OR ( filter by function (!task.isRecurring) && task.originalMarkdown.includes('🔁') ) OR ( filter by function task.file.path.toLocaleLowerCase() === 'TASKS RELEASES/4.1.0 RELEASE.MD'.toLocaleLowerCase() ) OR ( filter by function const taskDate = task.due.moment; const now = moment(); return taskDate?.isSame(now, 'day') || ( !taskDate && task.heading?.includes(now.format('YYYY-MM-DD')) ) || false ) OR ( filter by function const wanted = '#context/home'; return task.heading?.includes(wanted) || task.tags.find( (tag) => tag === wanted ) && true || false; )'
 =>
 Result:
 {
     "simplifiedLine": "( f1) ) OR ( f2 ) OR ( f3 ) OR ( f4) ) OR ( f5) ) OR ( f6) ) OR ( f7 ) OR ( f8 )",
     "filters": {
-        "f1": "filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.type",
+        "f1": "filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.stage",
         "f2": "filter by function const date = task.due.moment; return date ? !date.isValid() : false;",
         "f3": "filter by function task.due.moment?.isSameOrBefore(moment(), 'day') || false",
         "f4": "filter by function task.urgency.toFixed(2) === 1.95.toFixed(2",
@@ -461,13 +461,13 @@ Result:
 
 
 Input:
-'( filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.type); ) OR ( filter by function const date = task.due.moment; return date ? !date.isValid() : false; ) OR ( filter by function task.due.moment?.isSameOrBefore(moment(), 'day') || false; ) OR ( filter by function task.urgency.toFixed(2) === 1.95.toFixed(2); ) OR ( filter by function (!task.isRecurring) && task.originalMarkdown.includes('🔁'); ) OR ( filter by function task.file.path.toLocaleLowerCase() === 'TASKS RELEASES/4.1.0 RELEASE.MD'.toLocaleLowerCase(); ) OR ( filter by function const taskDate = task.due.moment; const now = moment(); return taskDate?.isSame(now, 'day') || ( !taskDate && task.heading?.includes(now.format('YYYY-MM-DD')) ) || false; ) OR ( filter by function const wanted = '#context/home'; return task.heading?.includes(wanted) || task.tags.find( (tag) => tag === wanted ) && true || false; )'
+'( filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.stage); ) OR ( filter by function const date = task.due.moment; return date ? !date.isValid() : false; ) OR ( filter by function task.due.moment?.isSameOrBefore(moment(), 'day') || false; ) OR ( filter by function task.urgency.toFixed(2) === 1.95.toFixed(2); ) OR ( filter by function (!task.isRecurring) && task.originalMarkdown.includes('🔁'); ) OR ( filter by function task.file.path.toLocaleLowerCase() === 'TASKS RELEASES/4.1.0 RELEASE.MD'.toLocaleLowerCase(); ) OR ( filter by function const taskDate = task.due.moment; const now = moment(); return taskDate?.isSame(now, 'day') || ( !taskDate && task.heading?.includes(now.format('YYYY-MM-DD')) ) || false; ) OR ( filter by function const wanted = '#context/home'; return task.heading?.includes(wanted) || task.tags.find( (tag) => tag === wanted ) && true || false; )'
 =>
 Result:
 {
     "simplifiedLine": "( f1 ) OR ( f2 ) OR ( f3 ) OR ( f4 ) OR ( f5 ) OR ( f6 ) OR ( f7 ) OR ( f8 )",
     "filters": {
-        "f1": "filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.type);",
+        "f1": "filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.stage);",
         "f2": "filter by function const date = task.due.moment; return date ? !date.isValid() : false;",
         "f3": "filter by function task.due.moment?.isSameOrBefore(moment(), 'day') || false;",
         "f4": "filter by function task.urgency.toFixed(2) === 1.95.toFixed(2);",
@@ -2852,14 +2852,14 @@ Result:
 
 
 Input:
-'(status.type is IN_PROGRESS) OR NOT (status.type is IN_PROGRESS)'
+'(status.stage is IN_PROGRESS) OR NOT (status.stage is IN_PROGRESS)'
 =>
 Result:
 {
     "simplifiedLine": "(f1) OR NOT (f2)",
     "filters": {
-        "f1": "status.type is IN_PROGRESS",
-        "f2": "status.type is IN_PROGRESS"
+        "f1": "status.stage is IN_PROGRESS",
+        "f2": "status.stage is IN_PROGRESS"
     }
 }
 

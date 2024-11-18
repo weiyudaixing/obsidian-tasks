@@ -7,7 +7,7 @@ import {
     expectTaskComparesBefore,
     expectTaskComparesEqual,
 } from '../../CustomMatchers/CustomMatchersForSorting';
-import { StatusConfiguration, StatusType } from '../../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../../src/Statuses/StatusConfiguration';
 import { fromLine } from '../../TestingTools/TestHelpers';
 import { StatusRegistry } from '../../../src/Statuses/StatusRegistry';
 import type { StatusCollection } from '../../../src/Statuses/StatusCollection';
@@ -15,8 +15,8 @@ import type { StatusCollection } from '../../../src/Statuses/StatusCollection';
 beforeAll(() => {
     StatusRegistry.getInstance().resetToDefaultStatuses();
     const importantCycle: StatusCollection = [
-        ['!', 'todo', 'X', 'TODO'],
-        ['X', 'done', '!', 'DONE'],
+        ['Task','!', 'todo', 'X', 'TODO'],
+        ['Task','X', 'done', '!', 'DONE'],
     ];
     importantCycle.forEach((entry) => {
         const status = Status.createFromImportedValue(entry);
@@ -36,11 +36,11 @@ describe('status', () => {
         // Assert
         expect(filter).not.toMatchTaskWithStatus(Status.TODO.configuration);
         expect(filter).toMatchTaskWithStatus(Status.DONE.configuration);
-        expect(filter).toMatchTaskWithStatus(new StatusConfiguration('X', 'Really Done', 'x', true, StatusType.DONE));
+        expect(filter).toMatchTaskWithStatus(new StatusConfiguration('Task', 'X', 'Really Done', 'x', true, StatusStage.DONE));
         expect(filter).not.toMatchTaskWithStatus(Status.IN_PROGRESS.configuration);
         expect(filter).toMatchTaskWithStatus(Status.CANCELLED.configuration);
-        expect(filter).not.toMatchTaskWithStatus(new StatusConfiguration('!', 'Todo', 'x', true, StatusType.TODO)); // 'done' checks type.
-        expect(filter).toMatchTaskWithStatus(new StatusConfiguration('^', 'Non', 'x', true, StatusType.NON_TASK));
+        expect(filter).not.toMatchTaskWithStatus(new StatusConfiguration('Task', '!', 'Todo', 'x', true, StatusStage.TODO)); // 'done' checks type.
+        expect(filter).toMatchTaskWithStatus(new StatusConfiguration('Task', '^', 'Non', 'x', true, StatusStage.NON_TASK));
     });
 
     it('not done', () => {
@@ -51,12 +51,12 @@ describe('status', () => {
         expect(filter).toMatchTaskWithStatus(Status.TODO.configuration);
         expect(filter).not.toMatchTaskWithStatus(Status.DONE.configuration);
         expect(filter).not.toMatchTaskWithStatus(
-            new StatusConfiguration('X', 'Really Done', 'x', true, StatusType.DONE),
+            new StatusConfiguration('Task', 'X', 'Really Done', 'x', true, StatusStage.DONE),
         );
         expect(filter).toMatchTaskWithStatus(Status.IN_PROGRESS.configuration);
         expect(filter).not.toMatchTaskWithStatus(Status.CANCELLED.configuration);
-        expect(filter).toMatchTaskWithStatus(new StatusConfiguration('!', 'Todo', 'x', true, StatusType.TODO)); // 'not done' type.
-        expect(filter).not.toMatchTaskWithStatus(new StatusConfiguration('^', 'Non', 'x', true, StatusType.NON_TASK));
+        expect(filter).toMatchTaskWithStatus(new StatusConfiguration('Task', '!', 'Todo', 'x', true, StatusStage.TODO)); // 'not done' type.
+        expect(filter).not.toMatchTaskWithStatus(new StatusConfiguration('Task', '^', 'Non', 'x', true, StatusStage.NON_TASK));
     });
 
     it('should honour original case, when explaining simple filters', () => {
@@ -126,7 +126,7 @@ describe('grouping by status', () => {
 
         // Check this symbol has been registered, so we are not passing by luck:
         const symbol = tasks[0].status.symbol;
-        expect(StatusRegistry.getInstance().bySymbol(symbol).type).not.toEqual(StatusType.EMPTY);
+        expect(StatusRegistry.getInstance().bySymbol(symbol).stage).not.toEqual(StatusStage.EMPTY);
 
         expect({ grouper, tasks }).groupHeadingsToBe(groups);
     });

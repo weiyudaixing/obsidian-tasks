@@ -9,13 +9,13 @@ import { TaskBuilder } from '../../TestingTools/TaskBuilder';
 import { StatusRegistry } from '../../../src/Statuses/StatusRegistry';
 import { StatusSettings } from '../../../src/Config/StatusSettings';
 import { resetSettings, updateSettings } from '../../../src/Config/Settings';
-import { StatusConfiguration, StatusType } from '../../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../../src/Statuses/StatusConfiguration';
 import { Status } from '../../../src/Statuses/Status';
 import { TestableTaskSaver, menuToString } from './MenuTestingHelpers';
 
 window.moment = moment;
 
-export {};
+export { };
 
 afterEach(() => {
     resetSettings();
@@ -48,8 +48,8 @@ describe('StatusMenu', () => {
     it('should ignore duplicate status symbols in global status settings', () => {
         // Arrange
         const statusSettings = new StatusSettings();
-        statusSettings.customStatuses.push(new StatusConfiguration('%', '% 1', '&', false, StatusType.TODO));
-        statusSettings.customStatuses.push(new StatusConfiguration('%', '% 2', '&', false, StatusType.TODO));
+        statusSettings.customStatuses.push(new StatusConfiguration('Task', '%', '% 1', '&', false, StatusStage.TODO));
+        statusSettings.customStatuses.push(new StatusConfiguration('Task', '%', '% 2', '&', false, StatusStage.TODO));
         updateSettings({
             statusSettings: statusSettings,
         });

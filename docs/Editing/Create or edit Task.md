@@ -212,10 +212,10 @@ For more information, including adding your own customised statuses, see [[Statu
 
 When you change the Status Symbol for a Task, the [[Dates#Date-tracking settings|Date-tracking settings]] are used to determine whether to update any date fields:
 
-- **If** the status is changed **to** a [[Status Types#DONE|DONE status type]] **from** any other status type,
+- **If** the status is changed **to** a [[Status Stages#DONE|DONE status stage]] **from** any other status stage,
   - **and** the "Set done date on every completed task" option is enabled,
   - **then** the **Done date** is changed to today's date.
-- **If** the status is changed **to** a [[Status Types#CANCELLED|CANCELLED status type]] **from** any other status type,
+- **If** the status is changed **to** a [[Status Stages#CANCELLED|CANCELLED status stage]] **from** any other status stage,
   - **and** the "Set cancelled date on every completed task" option is enabled,
   - **then** the **Cancelled date** is changed to today's date.
 

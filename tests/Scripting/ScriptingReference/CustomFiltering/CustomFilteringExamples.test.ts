@@ -402,7 +402,7 @@ describe('obsidian properties', () => {
 describe('statuses', () => {
     beforeEach(() => {
         StatusRegistry.getInstance().resetToDefaultStatuses();
-        const statusConfiguration = new StatusConfiguration('s', 'advances to self', 's', false);
+        const statusConfiguration = new StatusConfiguration('Task','s', 'advances to self', 's', false);
         StatusRegistry.getInstance().add(statusConfiguration);
     });
 
@@ -478,17 +478,17 @@ describe('statuses', () => {
         ],
 
         [
-            'task.status.type',
+            'task.status.stage',
             [
-                ["filter by function task.status.type === 'NON_TASK'", 'Find tasks of type `NON_TASK`.'],
+                ["filter by function task.status.stage === 'NON_TASK'", 'Find tasks of stage `NON_TASK`.'],
                 [
-                    "filter by function 'TODO,IN_PROGRESS'.includes(task.status.type)",
-                    'Find tasks that are either type `TODO` or type `IN_PROGRESS`.',
+                    "filter by function 'TODO,IN_PROGRESS'.includes(task.status.stage)",
+                    'Find tasks that are either stage `TODO` or stage `IN_PROGRESS`.',
                     'This can be more convenient than doing Boolean `OR` searches',
                 ],
                 [
-                    "filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.type)",
-                    'Find tasks that are not type `NON_TASK` and not type `CANCELLED`.',
+                    "filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.stage)",
+                    'Find tasks that are not stage `NON_TASK` and not stage `CANCELLED`.',
                 ],
             ],
             tasks,

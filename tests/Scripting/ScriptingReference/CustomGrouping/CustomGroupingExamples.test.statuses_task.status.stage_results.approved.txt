@@ -20,8 +20,7 @@ This sorts the status stages in the same order as "group by status.stage".
 %%1%%IN_PROGRESS
 %%2%%TODO
 %%3%%DONE
-%%4%%CANCELLED
-%%5%%NON_TASK
-%%6%%EMPTY
+%%5%%CANCELLED
+%%8%%EMPTY
 ====================================================================================
 

@@ -11,7 +11,7 @@ import { GlobalFilter } from '../../src/Config/GlobalFilter';
 import type { StatusCollection } from '../../src/Statuses/StatusCollection';
 import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
 import { TaskLocation } from '../../src/Task/TaskLocation';
-import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../src/Statuses/StatusConfiguration';
 import { fromLine, toMarkdown } from '../TestingTools/TestHelpers';
 import { TaskBuilder } from '../TestingTools/TaskBuilder';
 import { RecurrenceBuilder } from '../TestingTools/RecurrenceBuilder';
@@ -21,7 +21,7 @@ import { booleanToEmoji } from '../TestingTools/FilterTestHelpers';
 import type { TasksDate } from '../../src/DateTime/TasksDate';
 import { example_kanban } from '../Obsidian/__test_data__/example_kanban';
 import { jason_properties } from '../Obsidian/__test_data__/jason_properties';
-import { OnCompletion } from '../../src/Task/OnCompletion';
+import { OnHook } from '../../src/Task/OnHook';
 import { createChildListItem } from './ListItemHelpers';
 
 window.moment = moment;
@@ -532,7 +532,7 @@ describe('properties for scripting', () => {
         expect(new TaskBuilder().status(Status.CANCELLED).build().isDone).toEqual(true);
         expect(
             new TaskBuilder()
-                .status(new Status(new StatusConfiguration('%', 'Non-task', ' ', true, StatusType.NON_TASK)))
+                .status(new Status(new StatusConfiguration('Task','%', 'Non-task', ' ', true, StatusStage.NON_TASK)))
                 .build().isDone,
         ).toEqual(true);
     });
@@ -598,7 +598,7 @@ describe('properties for scripting', () => {
 
 describe('task dependencies', () => {
     beforeEach(() => {
-        const nonTaskStatus = new StatusConfiguration('Q', 'Question', 'A', true, StatusType.NON_TASK);
+        const nonTaskStatus = new StatusConfiguration('Question','Q', 'Question', 'A', true, StatusStage.NON_TASK);
         StatusRegistry.getInstance().add(nonTaskStatus);
     });
 
@@ -761,17 +761,17 @@ describe('to string', () => {
 const sampleStatusesForToggling: StatusCollection = [
     // A custom set of 3 statuses that form a cycle.
     // The last one has a conventional symbol, 'X' that is recognised as DONE.fix
-    ['!', 'Important', 'D', 'TODO'],
-    ['D', 'Doing - Important', 'X', 'IN_PROGRESS'],
-    ['X', 'Done - Important', '!', 'DONE'],
+    ['Task','!', 'Important', 'D', 'TODO'],
+    ['Task','D', 'Doing - Important', 'X', 'IN_PROGRESS'],
+    ['Task','X', 'Done - Important', '!', 'DONE'],
     // A set that uses an unconventional symbol for DONE
-    ['1', 'Status 1', '2', 'TODO'],
-    ['2', 'Status 2', '3', 'IN_PROGRESS'],
-    ['3', 'Status 3', '1', 'DONE'],
-    ['4', 'Status 4', '1', 'CANCELLED'],
+    ['Task','1', 'Status 1', '2', 'TODO'],
+    ['Task','2', 'Status 2', '3', 'IN_PROGRESS'],
+    ['Task','3', 'Status 3', '1', 'DONE'],
+    ['Task','4', 'Status 4', '1', 'CANCELLED'],
     // A set where the DONE task goes to an unknown symbol
-    ['a', 'Status a', 'b', 'TODO'],
-    ['b', 'Status b', 'c', 'DONE'], // c is not known
+    ['Task','a', 'Status a', 'b', 'TODO'],
+    ['Task','b', 'Status b', 'c', 'DONE'], // c is not known
 ];
 
 describe('toggle done', () => {
@@ -1317,7 +1317,7 @@ describe('handle new status', () => {
 
     it('should not create a new task, if the new status is different object but same behaviour', () => {
         const task = fromLine({ line: '- [!] An important task' });
-        const newStatus = Status.createFromImportedValue(['!', 'Important', 'D', 'TODO']);
+        const newStatus = Status.createFromImportedValue(['Task','!', 'Important', 'D', 'TODO']);
         const newTasks = task.handleNewStatus(newStatus);
 
         expect(newTasks.length).toEqual(1);
@@ -1326,7 +1326,7 @@ describe('handle new status', () => {
 
     it('should create a new task, if the status symbol is unchanged but represents a different behaviour', () => {
         const task = fromLine({ line: '- [!] An important task' });
-        const newStatus = Status.createFromImportedValue(['!', 'a different status', 'D', 'TODO']);
+        const newStatus = Status.createFromImportedValue(['Task','!', 'a different status', 'D', 'TODO']);
         const newTasks = task.handleNewStatus(newStatus);
 
         expect(newTasks.length).toEqual(1);
@@ -1706,10 +1706,10 @@ describe('identicalTo', () => {
         expect(lhs).not.toBeIdenticalTo(new TaskBuilder().dependsOn(['12345']));
     });
 
-    it('should check onCompletion', () => {
-        const lhs = new TaskBuilder().onCompletion(OnCompletion.Ignore);
-        expect(lhs).toBeIdenticalTo(new TaskBuilder().onCompletion(OnCompletion.Ignore));
-        expect(lhs).not.toBeIdenticalTo(new TaskBuilder().onCompletion(OnCompletion.Delete));
+    it('should check onHook', () => {
+        const lhs = new TaskBuilder().onHook(OnHook.Ignore);
+        expect(lhs).toBeIdenticalTo(new TaskBuilder().onHook(OnHook.Ignore));
+        expect(lhs).not.toBeIdenticalTo(new TaskBuilder().onHook(OnHook.Delete));
     });
 
     it('should correctly compare a task with status read from user settings', () => {

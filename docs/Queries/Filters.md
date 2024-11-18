@@ -281,16 +281,16 @@ For full details of combining filters with boolean operators, see [[Combining Fi
 
 ### Status
 
-- `done` - matches tasks with status types `DONE`, `CANCELLED` and `NON_TASK`
-- `not done` - matches tasks with status types `TODO` and `IN_PROGRESS`
+- `done` - matches tasks with status stages `DONE`, `CANCELLED` and `NON_TASK`
+- `not done` - matches tasks with status stages `TODO` and `IN_PROGRESS`
 
 > [!info]
-> Prior to Tasks 1.23.0, there was no concept of task status type, and so only the status symbol was used:
+> Prior to Tasks 1.23.0, there was no concept of task status stage, and so only the status symbol was used:
 >
 > - a task with `[ ]` used to count as `not done`
 > - any other character than space used to count as `done`
 >
-> The new behaviour is more flexible and was required to introduce support for in-progress and cancelled tasks. If the original behaviour is preferred, you can change the status types of every symbol except `space` to `DONE`. See [[Set up custom statuses|How to set up your custom statuses]].
+> The new behaviour is more flexible and was required to introduce support for in-progress and cancelled tasks. If the original behaviour is preferred, you can change the status stages of every symbol except `space` to `DONE`. See [[Set up custom statuses|How to set up your custom statuses]].
 
 Since Tasks 4.2.0, **[[Custom Filters|custom filtering]] by status** is now possible, using `task.isDone`.
 
@@ -311,7 +311,7 @@ filter by function ! task.isDone
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 
 > [!NOTE]
-> `task.status.type` (see [[#Status Type]]) gives more precision in custom filters than `task.isDone`.
+> `task.status.stage` (see [[#Status Stage]]) gives more precision in custom filters than `task.isDone`.
 
 ### Status Name
 
@@ -340,44 +340,44 @@ filter by function task.status.name === 'Unknown'
 
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 
-### Status Type
+### Status Stage
 
-- `status.type (is|is not) (TODO|DONE|IN_PROGRESS|CANCELLED|NON_TASK)`
+- `status.stage (is|is not) (TODO|DONE|IN_PROGRESS|CANCELLED|NON_TASK)`
   - The values `TODO` etc are case-insensitive: you can use `in_progress`, for example
-- This searches the types you have given to your custom statuses.
+- This searches the stages you have given to your custom statuses.
 - This search is efficient if you wish to find all tasks that are `IN_PROGRESS`, and you have set up your statuses to have `[/]`, `[d]` and perhaps several others all treated as `IN_PROGRESS`.
-- To search for multiple possible status types:
-  - To exclude multiple values, you can use multiple `status.type is not` lines.
-  - To allow multiple values, use a boolean combination, for example: `( status.type is TODO ) OR ( status.type is IN_PROGRESS )`.
+- To search for multiple possible status stages:
+  - To exclude multiple values, you can use multiple `status.stage is not` lines.
+  - To allow multiple values, use a boolean combination, for example: `( status.stage is TODO ) OR ( status.stage is IN_PROGRESS )`.
   - Or see the 'custom filtering' examples below.
 
 > [!released]
-`status.type` text searching was introduced in Tasks 1.23.0.
+`status.stage` text searching was introduced in Tasks 1.23.0.
 
 For more information, including adding your own customised statuses, see [[Statuses]].
 
-Since Tasks 4.2.0, **[[Custom Filters|custom filtering]] by status type** is now possible, using `task.status.type`.
+Since Tasks 4.2.0, **[[Custom Filters|custom filtering]] by status stage** is now possible, using `task.status.stage`.
 
-<!-- placeholder to force blank line before included text --><!-- include: CustomFilteringExamples.test.statuses_task.status.type_docs.approved.md -->
-
-```javascript
-filter by function task.status.type === 'NON_TASK'
-```
-
-- Find tasks of type `NON_TASK`.
+<!-- placeholder to force blank line before included text --><!-- include: CustomFilteringExamples.test.statuses_task.status.stage_docs.approved.md -->
 
 ```javascript
-filter by function 'TODO,IN_PROGRESS'.includes(task.status.type)
+filter by function task.status.stage === 'NON_TASK'
 ```
 
-- Find tasks that are either type `TODO` or type `IN_PROGRESS`.
+- Find tasks of stage `NON_TASK`.
+
+```javascript
+filter by function 'TODO,IN_PROGRESS'.includes(task.status.stage)
+```
+
+- Find tasks that are either stage `TODO` or stage `IN_PROGRESS`.
 - This can be more convenient than doing Boolean `OR` searches.
 
 ```javascript
-filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.type)
+filter by function ! 'NON_TASK,CANCELLED'.includes(task.status.stage)
 ```
 
-- Find tasks that are not type `NON_TASK` and not type `CANCELLED`.
+- Find tasks that are not stage `NON_TASK` and not stage `CANCELLED`.
 
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 
@@ -470,7 +470,7 @@ A task is treated as `blocking` if:
 
 - it has an `id` value,
 - at least one other task in the vault has that `id` value in its `dependsOn` list,
-- both tasks have status type `TODO` or `IN_PROGRESS`.
+- both tasks have status stage `TODO` or `IN_PROGRESS`.
 
 For example:
 
@@ -482,7 +482,7 @@ For example:
 Note also:
 
 - Only direct dependencies are considered.
-- Tasks with status type `DONE`, `CANCELLED` or `NON_TASK` are never treated as `blocking`.
+- Tasks with status stage `DONE`, `CANCELLED` or `NON_TASK` are never treated as `blocking`.
 
 For more information, see [[Task Dependencies]].
 
@@ -502,7 +502,7 @@ A task is treated as `blocked` if:
 
 - it has one or more `dependsOn` values,
 - its `dependsOn` list includes the id any tasks in the vault,
-- both tasks have status type `TODO` or `IN_PROGRESS`.
+- both tasks have status stage `TODO` or `IN_PROGRESS`.
 
 For example:
 
@@ -514,7 +514,7 @@ For example:
 Note also:
 
 - Only direct dependencies are considered.
-- Tasks with status type `DONE`, `CANCELLED` or `NON_TASK` are never treated as `blocked`.
+- Tasks with status stage `DONE`, `CANCELLED` or `NON_TASK` are never treated as `blocked`.
 
 For more information, see [[Task Dependencies]].
 

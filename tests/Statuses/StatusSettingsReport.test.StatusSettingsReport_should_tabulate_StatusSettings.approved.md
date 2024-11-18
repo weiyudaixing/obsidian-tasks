@@ -1,6 +1,6 @@
-| Status Symbol | Next Status Symbol | Status Name | Status Type | Problems (if any) |
-| ----- | ----- | ----- | ----- | ----- |
-| `space` | `x` | Todo | `TODO` |  |
-| `x` | `space` | Done | `DONE` |  |
-| `/` | `x` | In Progress | `IN_PROGRESS` |  |
-| `-` | `space` | Cancelled | `CANCELLED` |  |
+| Object Class of Status | Status Symbol | Next Status Symbol | Status Name | Status Stage | Problems (if any) |
+| ----- | ----- | ----- | ----- | ----- | ----- |
+| Task | `space` | `x` | Todo | `TODO` |  |
+| Task | `x` | `space` | Done | `DONE` |  |
+| Task | `/` | `x` | In Progress | `IN_PROGRESS` |  |
+| Task | `-` | `space` | Cancelled | `CANCELLED` |  |

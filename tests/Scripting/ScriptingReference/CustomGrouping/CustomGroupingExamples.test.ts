@@ -450,15 +450,15 @@ describe('statuses', () => {
         ],
 
         [
-            'task.status.type',
+            'task.status.stage',
             [
                 [
-                    'group by function task.status.type',
-                    'Unlike "group by status.type", this sorts the status types in alphabetical order',
+                    'group by function task.status.stage',
+                    'Unlike "group by status.stage", this sorts the status stages in alphabetical order',
                 ],
                 [
-                    'group by function task.status.typeGroupText',
-                    'This sorts the status types in the same order as "group by status.type"',
+                    'group by function task.status.stageGroupText',
+                    'This sorts the status stages in the same order as "group by status.stage"',
                 ],
             ],
             SampleTasks.withAllStatuses(),

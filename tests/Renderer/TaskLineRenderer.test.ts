@@ -275,8 +275,8 @@ describe('task line rendering - layout options', () => {
         await testLayoutOptions(['Do exercises #todo #health', ' ⛔ 123456,abc123'], [TaskLayoutComponent.DependsOn]);
     });
 
-    it('renders with onCompletion', async () => {
-        await testLayoutOptions(['Do exercises #todo #health', ' 🏁 delete'], [TaskLayoutComponent.OnCompletion]);
+    it('renders with onHook', async () => {
+        await testLayoutOptions(['Do exercises #todo #health', ' 🏁 delete'], [TaskLayoutComponent.OnHook]);
     });
 });
 
@@ -493,17 +493,17 @@ describe('task line rendering - classes and data attributes', () => {
     };
 
     it('creates data attributes for custom statuses', async () => {
-        await testLiAttributes('- [ ] An incomplete task', ['task: ', 'taskStatusName: Todo', 'taskStatusType: TODO']);
-        await testLiAttributes('- [x] A complete task', ['task: x', 'taskStatusName: Done', 'taskStatusType: DONE']);
+        await testLiAttributes('- [ ] An incomplete task', ['task: ', 'taskStatusName: Todo', 'taskStatusStage: TODO']);
+        await testLiAttributes('- [x] A complete task', ['task: x', 'taskStatusName: Done', 'taskStatusStage: DONE']);
         await testLiAttributes('- [/] In-progress task', [
             'task: /',
             'taskStatusName: In Progress',
-            'taskStatusType: IN_PROGRESS',
+            'taskStatusStage: IN_PROGRESS',
         ]);
         await testLiAttributes('- [-] In-progress task', [
             'task: -',
             'taskStatusName: Cancelled',
-            'taskStatusType: CANCELLED',
+            'taskStatusStage: CANCELLED',
         ]);
     });
 

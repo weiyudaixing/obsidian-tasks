@@ -56,8 +56,8 @@ For more information, including adding your own customised statuses, see [[Statu
 - `group by status` (Done or Todo, which is capitalized for visibility in the headings)
   - Note that the Done group is displayed before the Todo group,
       which differs from the Sorting ordering of this property.
-    - `Done` is used for tasks status types `DONE`, `CANCELLED` and `NON_TASK`
-    - `Todo` is used for status types with type `TODO` and `IN_PROGRESS`
+    - `Done` is used for tasks status stages `DONE`, `CANCELLED` and `NON_TASK`
+    - `Todo` is used for status stages with stage `TODO` and `IN_PROGRESS`
 
 Since Tasks 4.0.0, **[[Custom Grouping|custom grouping]] by status** is now possible.
 
@@ -97,10 +97,10 @@ group by function task.status.name.toUpperCase()
 
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 
-### Status Type
+### Status Stage
 
-- `group by status.type`
-  - This groups by the types you have given to your custom statuses.
+- `group by status.stage`
+  - This groups by the stages you have given to your custom statuses.
   - The groups will appear in this order, and with these group names:
     - `IN_PROGRESS`
     - `TODO`
@@ -109,25 +109,25 @@ group by function task.status.name.toUpperCase()
     - `NON_TASK`
 
 > [!released]
-`group by status.type` was introduced in Tasks 1.23.0.
+`group by status.stage` was introduced in Tasks 1.23.0.
 
-Since Tasks 4.0.0, **[[Custom Grouping|custom grouping]] by status types** is now possible.
+Since Tasks 4.0.0, **[[Custom Grouping|custom grouping]] by status stages** is now possible.
 
-`task.status.typeGroupText` was added in Tasks 4.9.0.
+`task.status.stageGroupText` was added in Tasks 4.9.0.
 
-<!-- placeholder to force blank line before included text --><!-- include: CustomGroupingExamples.test.statuses_task.status.type_docs.approved.md -->
-
-```javascript
-group by function task.status.type
-```
-
-- Unlike "group by status.type", this sorts the status types in alphabetical order.
+<!-- placeholder to force blank line before included text --><!-- include: CustomGroupingExamples.test.statuses_task.status.stage_docs.approved.md -->
 
 ```javascript
-group by function task.status.typeGroupText
+group by function task.status.stage
 ```
 
-- This sorts the status types in the same order as "group by status.type".
+- Unlike "group by status.stage", this sorts the status stages in alphabetical order.
+
+```javascript
+group by function task.status.stageGroupText
+```
+
+- This sorts the status stages in the same order as "group by status.stage".
 
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 

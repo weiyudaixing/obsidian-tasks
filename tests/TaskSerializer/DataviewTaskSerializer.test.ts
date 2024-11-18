@@ -7,7 +7,7 @@ import { TaskBuilder } from '../TestingTools/TaskBuilder';
 import { DATAVIEW_SYMBOLS, DataviewTaskSerializer } from '../../src/TaskSerializer/DataviewTaskSerializer';
 import type { Task } from '../../src/Task/Task';
 import type { TaskDetails } from '../../src/TaskSerializer';
-import { OnCompletion } from '../../src/Task/OnCompletion';
+import { OnHook } from '../../src/Task/OnHook';
 import { Priority } from '../../src/Task/Priority';
 
 jest.mock('obsidian');
@@ -53,11 +53,11 @@ describe('DataviewTaskSerializer', () => {
             });
         });
 
-        describe('should parse onCompletion', () => {
+        describe('should parse onHook', () => {
             it('should parse delete action', () => {
-                const onCompletion = '[onCompletion:: delete]';
-                const taskDetails = deserialize(onCompletion);
-                expect(taskDetails).toMatchTaskDetails({ onCompletion: OnCompletion.Delete });
+                const onHook = '[onHook:: delete]';
+                const taskDetails = deserialize(onHook);
+                expect(taskDetails).toMatchTaskDetails({ onHook: OnHook.Delete });
             });
         });
 
@@ -326,10 +326,10 @@ describe('DataviewTaskSerializer', () => {
             expect(serialized).toEqual('  [repeat:: every day]');
         });
 
-        it('should serialize onCompletion', () => {
-            const task = new TaskBuilder().onCompletion(OnCompletion.Delete).description('').build();
+        it('should serialize onHook', () => {
+            const task = new TaskBuilder().onHook(OnHook.Delete).description('').build();
             const serialized = serialize(task);
-            expect(serialized).toEqual('  [onCompletion:: delete]');
+            expect(serialized).toEqual('  [onHook:: delete]');
         });
 
         it('should serialize tags', () => {
@@ -354,7 +354,7 @@ describe('DataviewTaskSerializer', () => {
             const task = TaskBuilder.createFullyPopulatedTask();
             const serialized = serialize(task);
             expect(serialized).toMatchInlineSnapshot(
-                '"Do exercises #todo #health  [id:: abcdef]  [dependsOn:: 123456,abc123]  [priority:: medium]  [repeat:: every day when done]  [onCompletion:: delete]  [created:: 2023-07-01]  [start:: 2023-07-02]  [scheduled:: 2023-07-03]  [due:: 2023-07-04]  [cancelled:: 2023-07-06]  [completion:: 2023-07-05] ^dcf64c"',
+                '"Do exercises #todo #health  [id:: abcdef]  [dependsOn:: 123456,abc123]  [priority:: medium]  [repeat:: every day when done]  [onHook:: delete]  [created:: 2023-07-01]  [start:: 2023-07-02]  [scheduled:: 2023-07-03]  [due:: 2023-07-04]  [cancelled:: 2023-07-06]  [completion:: 2023-07-05] ^dcf64c"',
             );
         });
     });

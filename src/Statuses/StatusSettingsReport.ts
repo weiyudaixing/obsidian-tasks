@@ -1,7 +1,7 @@
 import { StatusSettings } from '../Config/StatusSettings';
 import { MarkdownTable } from '../lib/MarkdownTable';
 import type { StatusConfiguration } from './StatusConfiguration';
-import { StatusType } from './StatusConfiguration';
+import { StatusStage } from './StatusConfiguration';
 import { Status } from './Status';
 
 function getFirstIndex(statusConfigurations: StatusConfiguration[], wantedSymbol: string) {
@@ -19,22 +19,22 @@ export function getPrintableSymbol(symbol: string) {
     return '`' + result + '`';
 }
 
-function checkIfConventionalType(status: StatusConfiguration, problems: string[]) {
-    // Check if conventional type is being used:
-    const conventionalType = Status.getTypeForUnknownSymbol(status.symbol);
-    if (status.type === conventionalType) {
+function checkIfConventionalStage(status: StatusConfiguration, problems: string[]) {
+    // Check if conventional stage is being used:
+    const conventionalStage = Status.getStageForUnknownSymbol(status.symbol);
+    if (status.stage === conventionalStage) {
         return;
     }
 
-    if (conventionalType === StatusType.TODO && status.symbol !== ' ') {
+    if (conventionalStage === StatusStage.TODO && status.symbol !== ' ') {
         // This was likely a default TODO - ignore it.
         return;
     }
 
     problems.push(
-        `For information, the conventional type for status symbol ${getPrintableSymbol(
+        `For information, the conventional stage for status symbol ${getPrintableSymbol(
             status.symbol,
-        )} is ${getPrintableSymbol(conventionalType)}: you may wish to review this type.`,
+        )} is ${getPrintableSymbol(conventionalStage)}: you may wish to review this stage.`,
     );
 }
 
@@ -50,20 +50,20 @@ function checkNextStatusSymbol(statuses: StatusConfiguration[], status: StatusCo
         return;
     }
 
-    if (status.type !== StatusType.DONE) {
+    if (status.stage !== StatusStage.DONE) {
         return;
     }
 
-    // This type is DONE: check that next status type is TODO or IN_PROGRESS.
+    // This stage is DONE: check that next status stage is TODO or IN_PROGRESS.
     // See issues #2089 and #2304.
     const nextStatus = statuses[indexOfNextSymbol];
     if (nextStatus) {
-        if (nextStatus.type !== 'TODO' && nextStatus.type !== 'IN_PROGRESS') {
+        if (nextStatus.stage !== 'TODO' && nextStatus.stage !== 'IN_PROGRESS') {
             const helpURL =
                 'https://publish.obsidian.md/tasks/Getting+Started/Statuses/Recurring+Tasks+and+Custom+Statuses';
             const message = [
                 `This \`DONE\` status is followed by ${getPrintableSymbol(
-                    nextStatus.type,
+                    nextStatus.stage,
                 )}, not \`TODO\` or \`IN_PROGRESS\`.`,
                 'If used to complete a recurring task, it will instead be followed by `TODO` or `IN_PROGRESS`, to ensure the next task matches the `not done` filter.',
                 `See [Recurring Tasks and Custom Statuses](${helpURL}).`,
@@ -88,7 +88,7 @@ function getProblemsForStatus(statuses: StatusConfiguration[], status: StatusCon
         return problems;
     }
 
-    checkIfConventionalType(status, problems);
+    checkIfConventionalStage(status, problems);
     checkNextStatusSymbol(statuses, status, problems);
     return problems;
 }
@@ -98,20 +98,22 @@ export function tabulateStatusSettings(statusSettings: StatusSettings) {
     //       Maybe try unifying the common code one day?
 
     const table = new MarkdownTable([
+        'Object Class of Status',
         'Status Symbol',
         'Next Status Symbol',
         'Status Name',
-        'Status Type',
+        'Status Stage',
         'Problems (if any)',
     ]);
 
     const statuses: StatusConfiguration[] = StatusSettings.allStatuses(statusSettings);
     statuses.forEach((status, index) => {
         table.addRow([
+            status.objectClass,
             getPrintableSymbol(status.symbol),
             getPrintableSymbol(status.nextStatusSymbol),
             status.name,
-            getPrintableSymbol(status.type),
+            getPrintableSymbol(status.stage),
             getProblemsForStatus(statuses, status, index).join('<br>'),
         ]);
     });

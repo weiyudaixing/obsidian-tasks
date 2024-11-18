@@ -168,16 +168,17 @@ export const getSettings = (): Settings => {
     addNewOptionsToUserSettings(defaultSettings.loggingOptions.minLevels, settings.loggingOptions.minLevels);
     addNewOptionsToUserSettings(defaultSettings.debugSettings, settings.debugSettings);
 
-    // In case saves pre-dated StatusConfiguration.type
+    // In case saves pre-dated StatusConfiguration.stage
     // TODO Special case for symbol 'X' or 'x' (just in case)
     settings.statusSettings.customStatuses.forEach((s, index, array) => {
-        const newType = Status.getTypeFromStatusTypeString(s.type);
+        const newStage = Status.getStageFromStatusStageString(s.stage);
         array[index] = new StatusConfiguration(
+            s.objectClass,
             s.symbol ?? ' ',
             s.name,
             s.nextStatusSymbol ?? 'x',
             s.availableAsCommand,
-            newType,
+            newStage,
         );
     });
 

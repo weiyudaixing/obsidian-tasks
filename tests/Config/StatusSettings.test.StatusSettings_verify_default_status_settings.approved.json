@@ -1,34 +1,38 @@
 {
   "coreStatuses": [
     {
+      "objectClass": "Task",
       "symbol": " ",
       "name": "Todo",
       "nextStatusSymbol": "x",
       "availableAsCommand": true,
-      "type": "TODO"
+      "stage": "TODO"
     },
     {
+      "objectClass": "Task",
       "symbol": "x",
       "name": "Done",
       "nextStatusSymbol": " ",
       "availableAsCommand": true,
-      "type": "DONE"
+      "stage": "DONE"
     }
   ],
   "customStatuses": [
     {
+      "objectClass": "Task",
       "symbol": "/",
       "name": "In Progress",
       "nextStatusSymbol": "x",
       "availableAsCommand": true,
-      "type": "IN_PROGRESS"
+      "stage": "IN_PROGRESS"
     },
     {
+      "objectClass": "Task",
       "symbol": "-",
       "name": "Cancelled",
       "nextStatusSymbol": " ",
       "availableAsCommand": true,
-      "type": "CANCELLED"
+      "stage": "CANCELLED"
     }
   ]
 }

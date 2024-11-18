@@ -5,7 +5,7 @@ import { StatusRegistry } from '../Statuses/StatusRegistry';
 import type { Status } from '../Statuses/Status';
 import { compareByDate } from '../DateTime/DateTools';
 import { TasksDate } from '../DateTime/TasksDate';
-import { StatusType } from '../Statuses/StatusConfiguration';
+import { StatusStage } from '../Statuses/StatusConfiguration';
 import type { TasksFile } from '../Scripting/TasksFile';
 import { PriorityTools } from '../lib/PriorityTools';
 import { logging } from '../lib/logging';
@@ -18,7 +18,7 @@ import type { Recurrence } from './Recurrence';
 import type { TaskLocation } from './TaskLocation';
 import type { Priority } from './Priority';
 import { TaskRegularExpressions } from './TaskRegularExpressions';
-import { OnCompletion, handleOnCompletion } from './OnCompletion';
+import { OnHook, handleOnHook } from './OnHook';
 
 /**
  * Storage for the task line, broken down in to sections.
@@ -61,7 +61,7 @@ export class Task extends ListItem {
     public readonly cancelledDate: Moment | null;
 
     public readonly recurrence: Recurrence | null;
-    public readonly onCompletion: OnCompletion;
+    public readonly onHook: OnHook;
 
     public readonly dependsOn: string[];
     public readonly id: string;
@@ -89,7 +89,7 @@ export class Task extends ListItem {
         doneDate,
         cancelledDate,
         recurrence,
-        onCompletion,
+        onHook,
         dependsOn,
         id,
         blockLink,
@@ -112,7 +112,7 @@ export class Task extends ListItem {
         doneDate: moment.Moment | null;
         cancelledDate: moment.Moment | null;
         recurrence: Recurrence | null;
-        onCompletion: OnCompletion;
+        onHook: OnHook;
         dependsOn: string[] | [];
         id: string;
         blockLink: string;
@@ -141,7 +141,7 @@ export class Task extends ListItem {
         this.cancelledDate = cancelledDate;
 
         this.recurrence = recurrence;
-        this.onCompletion = onCompletion;
+        this.onHook = onHook;
 
         this.dependsOn = dependsOn;
         this.id = id;
@@ -355,12 +355,12 @@ export class Task extends ListItem {
         }
 
         const { setDoneDate } = getSettings();
-        const newDoneDate = this.newDate(newStatus, StatusType.DONE, this.doneDate, setDoneDate, today);
+        const newDoneDate = this.newDate(newStatus, StatusStage.DONE, this.doneDate, setDoneDate, today);
 
         const { setCancelledDate } = getSettings();
         const newCancelledDate = this.newDate(
             newStatus,
-            StatusType.CANCELLED,
+            StatusStage.CANCELLED,
             this.cancelledDate,
             setCancelledDate,
             today,
@@ -394,26 +394,26 @@ export class Task extends ListItem {
 
     /**
      * Returns the new value to use for a date that tracks progress on tasks upon transition to a different
-     * {@link StatusType}.
+     * {@link StatusStage}.
      *
      * Currently, this is used to calculate the new Done Date or Cancelled Date,
      */
     private newDate(
         newStatus: Status,
-        statusType: StatusType,
+        statusStage: StatusStage,
         oldDate: moment.Moment | null,
         dateEnabledInSettings: boolean,
         today: moment.Moment,
     ) {
         let newDate = null;
-        if (newStatus.type === statusType) {
-            if (this.status.type !== statusType) {
+        if (newStatus.stage === statusStage) {
+            if (this.status.stage !== statusStage) {
                 // Set date only if setting value is true.
                 if (dateEnabledInSettings) {
                     newDate = today;
                 }
             } else {
-                // This task was already in statusType, so preserve its existing date.
+                // This task was already in statusStage, so preserve its existing date.
                 newDate = oldDate;
             }
         }
@@ -487,20 +487,22 @@ export class Task extends ListItem {
     }
 
     private putRecurrenceInUsersOrder(newTasks: Task[]) {
-        const potentiallyPrunedTasks = handleOnCompletion(this, newTasks);
+        const potentiallyPrunedTasks = handleOnHook(this, newTasks);
         const { recurrenceOnNextLine } = getSettings();
         return recurrenceOnNextLine ? potentiallyPrunedTasks.reverse() : potentiallyPrunedTasks;
     }
 
     /**
      * Return whether the task is considered done.
-     * @returns true if the status type is {@link StatusType.DONE}, {@link StatusType.CANCELLED} or {@link StatusType.NON_TASK}, and false otherwise.
+     * @returns true if the status stage is {@link StatusStage.DONE}, {@link StatusStage.ARCHIVED}, {@link StatusStage.CANCELLED}, {@link StatusStage.HOOK}or {@link StatusStage.NON_TASK}, and false otherwise.
      */
     public get isDone(): boolean {
         return (
-            this.status.type === StatusType.DONE ||
-            this.status.type === StatusType.CANCELLED ||
-            this.status.type === StatusType.NON_TASK
+            this.status.stage === StatusStage.DONE ||
+            this.status.stage === StatusStage.CANCELLED ||
+            this.status.stage === StatusStage.ARCHIVED ||
+            this.status.stage === StatusStage.HOOK ||
+            this.status.stage === StatusStage.NON_TASK
         );
     }
 
@@ -824,7 +826,7 @@ export class Task extends ListItem {
             'scheduledDateIsInferred',
             'id',
             'dependsOn',
-            'onCompletion',
+            'onHook',
         ];
         for (const el of args) {
             if (this[el]?.toString() !== other[el]?.toString()) return false;

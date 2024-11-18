@@ -4,7 +4,7 @@
 
 import moment from 'moment';
 
-import { StatusConfiguration, StatusType } from '../../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../../src/Statuses/StatusConfiguration';
 import { StatusRegistry } from '../../../src/Statuses/StatusRegistry';
 import { SearchInfo } from '../../../src/Query/SearchInfo';
 import { parseFilter } from '../../../src/Query/FilterParser';
@@ -29,7 +29,7 @@ function makeFilters() {
 
 describe('blocking and blocked filters', () => {
     beforeEach(() => {
-        const nonTaskStatus = new StatusConfiguration('Q', 'Question', 'A', true, StatusType.NON_TASK);
+        const nonTaskStatus = new StatusConfiguration('Task', 'Q', 'Question', 'A', true, StatusStage.NON_TASK);
         StatusRegistry.getInstance().add(nonTaskStatus);
     });
 

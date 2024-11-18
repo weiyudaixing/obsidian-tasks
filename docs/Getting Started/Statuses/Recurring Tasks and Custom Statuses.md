@@ -13,10 +13,10 @@ publish: true
 
 ## Determining the next status
 
-When you click on the checkbox of a task, the Tasks plugin applies the following logic: ^[Except when the task status has type `NON_TASK`. See [[#When the current status type is NON_TASK]] for an example.]
+When you click on the checkbox of a task, the Tasks plugin applies the following logic: ^[Except when the task status has stage `NON_TASK`. See [[#When the current status stage is NON_TASK]] for an example.]
 
 1. When a task line checkbox is clicked, the next status symbol is looked up in the user's Task plugin's [[Status Settings]].
-2. If the next status symbol is of type `DONE`:
+2. If the next status symbol is of stage `DONE`:
     - A [[Dates#Done date|Done date]] is added (if enabled in user settings).
     - If the task line has a Recurrence rule, a new task is created, with the next status symbol after the `DONE` symbol.
     - If that next status is neither `TODO` nor `IN_PROGRESS`, a different status is chosen. See [[#When DONE is not followed by TODO or IN_PROGRESS]] below.
@@ -73,7 +73,7 @@ The **first time we click on the task's checkbox** or run Tasks' **Toggle task d
 
 - Notice that `[ ]` has become `[/]` ...
   - ... because the next status symbol after `space` is `/`.
-- From the settings, we see the status type is now `IN_PROGRESS`.
+- From the settings, we see the status stage is now `IN_PROGRESS`.
 
 ### Second click - advances to DONE and recurs
 
@@ -96,7 +96,7 @@ Let's look at the **first of those two lines:**
 
 - Notice that `[/]` has become `[x]` ...
   - ... because the next status symbol after `/` is `x`.
-- From the settings, we see the status type is now `DONE`.
+- From the settings, we see the status stage is now `DONE`.
 - So a [[Dates#Done date|Done date]] is added (if enabled in user settings).
 
 Let's look at the **second of those two lines**:
@@ -107,7 +107,7 @@ Let's look at the **second of those two lines**:
 
 - This new task line was created because:
   - the original task had a Recurrence rule,
-  - and its status type had advanced to `DONE`.
+  - and its status stage had advanced to `DONE`.
 - Notice that in the new task line, the status is `[ ]` ...
   - ... because the next status symbol after `x` is ``.
 - And the Due date has advanced a day.
@@ -140,7 +140,7 @@ linkStyle default stroke:gray
 ```
 <!-- endInclude -->
 
-> [!important] Status type for next recurrence: always `TODO` or `IN_PROGRESS`
+> [!important] Status stage for next recurrence: always `TODO` or `IN_PROGRESS`
 > When toggling a recurring task creates the next recurrence, it only makes sense for the new task to be `TODO` or `IN_PROGRESS`, so that the new task is found by `not done` searches.)
 >
 > The dashed arrow with "recurring" emoji in the above diagram indicates that Tasks will skip the `Cancelled` status for new recurrences, and jump to `Todo`.
@@ -170,9 +170,9 @@ This means that even though the new recurrence of any completed recurring tasks 
 > [!released]
 > This improved selection of status for new recurrences was introduced in Tasks 5.4.0.
 
-## When the current status type is NON_TASK
+## When the current status stage is NON_TASK
 
-[[Status Types#NON_TASK|NON_TASK]] is a special status type to use for checklists that do not represent tasks.
+[[Status Stages#NON_TASK|NON_TASK]] is a special status stage to use for checklists that do not represent tasks.
 
 <!-- include: DocsSamplesForStatuses.test.DefaultStatuses_pro-con-cycle.approved.detailed.mermaid.md -->
 ```mermaid

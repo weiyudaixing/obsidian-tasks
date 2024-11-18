@@ -5,7 +5,7 @@ import moment from 'moment';
 import { TasksFile } from '../../src/Scripting/TasksFile';
 import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
 import { Status } from '../../src/Statuses/Status';
-import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../src/Statuses/StatusConfiguration';
 import { Task } from '../../src/Task/Task';
 import { TaskLocation } from '../../src/Task/TaskLocation';
 import type { StatusCollection, StatusCollectionEntry } from '../../src/Statuses/StatusCollection';
@@ -66,8 +66,8 @@ describe('StatusRegistry', () => {
         // Arrange
         const statusRegistry = new StatusRegistry();
         const statuses = [
-            new StatusConfiguration('Q', 'Question', 'A', false, StatusType.NON_TASK),
-            new StatusConfiguration('A', 'Answer', 'Q', false, StatusType.NON_TASK),
+            new StatusConfiguration('Question','Q', 'Question', 'A', false, StatusStage.NON_TASK),
+            new StatusConfiguration('Question','A', 'Answer', 'Q', false, StatusStage.NON_TASK),
         ];
 
         // Act
@@ -107,10 +107,10 @@ describe('StatusRegistry', () => {
         // Arrange
         const statusRegistry = new StatusRegistry();
         statusRegistry.resetToDefaultStatuses();
-        const statusA = new Status(new StatusConfiguration('a', 'A', 'b', false));
-        const statusB = new Status(new StatusConfiguration('b', 'B', 'c', false));
-        const statusC = new Status(new StatusConfiguration('c', 'C', 'd', false));
-        const statusD = new Status(new StatusConfiguration('d', 'D', 'a', false));
+        const statusA = new Status(new StatusConfiguration('Task','a', 'A', 'b', false));
+        const statusB = new Status(new StatusConfiguration('Task','b', 'B', 'c', false));
+        const statusC = new Status(new StatusConfiguration('Task','c', 'C', 'd', false));
+        const statusD = new Status(new StatusConfiguration('Task','d', 'D', 'a', false));
 
         // Act
         statusRegistry.add(statusA);
@@ -127,28 +127,28 @@ describe('StatusRegistry', () => {
 
     it('should return EMPTY if next status does not exist', () => {
         const statusRegistry = new StatusRegistry();
-        const status = new Status(new StatusConfiguration('P', 'Pro', 'C', false));
+        const status = new Status(new StatusConfiguration('Task','P', 'Pro', 'C', false));
         const nextStatus = statusRegistry.getNextStatus(status);
-        expect(nextStatus.type).toEqual(StatusType.EMPTY);
+        expect(nextStatus.stage).toEqual(StatusStage.EMPTY);
     });
 
     it('should construct a TODO on request if next status does not exist', () => {
         // Arrange
         const statusRegistry = new StatusRegistry();
-        const status = new Status(new StatusConfiguration('P', 'Pro', 'C', false));
+        const status = new Status(new StatusConfiguration('Task','P', 'Pro', 'C', false));
         const nextStatus = statusRegistry.getNextStatusOrCreate(status);
 
         // Assert
         expect(nextStatus.symbol).toEqual('C');
         expect(nextStatus.name).toEqual('Unknown');
         expect(nextStatus.nextStatusSymbol).toEqual('x');
-        expect(nextStatus.type).toEqual(StatusType.TODO);
+        expect(nextStatus.stage).toEqual(StatusStage.TODO);
     });
 
     it('should handle adding custom StatusConfiguration', () => {
         // Arrange
         const statusRegistry = new StatusRegistry();
-        const statusConfiguration = new StatusConfiguration('a', 'A', 'b', false);
+        const statusConfiguration = new StatusConfiguration('Task','a', 'A', 'b', false);
         statusRegistry.add(statusConfiguration);
 
         // Assert
@@ -159,7 +159,7 @@ describe('StatusRegistry', () => {
     it('should not modify an added custom Status', () => {
         // Arrange
         const statusRegistry = new StatusRegistry();
-        const status = new Status(new StatusConfiguration('a', 'A', 'b', false));
+        const status = new Status(new StatusConfiguration('Task','a', 'A', 'b', false));
         statusRegistry.add(status);
 
         // Assert
@@ -170,19 +170,19 @@ describe('StatusRegistry', () => {
     it('should find unknown statuses from tasks in the vault, sorted by symbol', () => {
         // Arrange
         const registry = new StatusRegistry();
-        expect(registry.bySymbol('!').type).toEqual(StatusType.EMPTY);
-        expect(registry.bySymbol('X').type).toEqual(StatusType.EMPTY);
-        expect(registry.bySymbol('d').type).toEqual(StatusType.EMPTY);
+        expect(registry.bySymbol('!').stage).toEqual(StatusStage.EMPTY);
+        expect(registry.bySymbol('X').stage).toEqual(StatusStage.EMPTY);
+        expect(registry.bySymbol('d').stage).toEqual(StatusStage.EMPTY);
         const allStatuses = [
-            new Status(new StatusConfiguration('!', 'Unknown', 'X', false, StatusType.TODO)),
-            new Status(new StatusConfiguration('X', 'Unknown', '!', false, StatusType.DONE)),
-            new Status(new StatusConfiguration('d', 'Unknown', '!', false, StatusType.IN_PROGRESS)),
+            new Status(new StatusConfiguration('Task','!', 'Unknown', 'X', false, StatusStage.TODO)),
+            new Status(new StatusConfiguration('Task','X', 'Unknown', '!', false, StatusStage.DONE)),
+            new Status(new StatusConfiguration('Task','d', 'Unknown', '!', false, StatusStage.IN_PROGRESS)),
             // Include some tasks with duplicate statuses, to make sure duplicates are discarded
-            new Status(new StatusConfiguration('!', 'Unknown', 'X', false, StatusType.TODO)),
-            new Status(new StatusConfiguration('X', 'Unknown', '!', false, StatusType.DONE)),
-            new Status(new StatusConfiguration('d', 'Unknown', '!', false, StatusType.IN_PROGRESS)),
+            new Status(new StatusConfiguration('Task','!', 'Unknown', 'X', false, StatusStage.TODO)),
+            new Status(new StatusConfiguration('Task','X', 'Unknown', '!', false, StatusStage.DONE)),
+            new Status(new StatusConfiguration('Task','d', 'Unknown', '!', false, StatusStage.IN_PROGRESS)),
             // Check that it does not add copies of any core statuses
-            new Status(new StatusConfiguration('-', 'Unknown', '!', false, StatusType.IN_PROGRESS)),
+            new Status(new StatusConfiguration('Task','-', 'Unknown', '!', false, StatusStage.IN_PROGRESS)),
         ];
 
         // Act
@@ -193,15 +193,15 @@ describe('StatusRegistry', () => {
 
         let s1;
         s1 = unknownStatuses[0];
-        expect(s1.type).toEqual(StatusType.TODO);
+        expect(s1.stage).toEqual(StatusStage.TODO);
         expect(s1.name).toEqual('Unknown (!)');
 
         s1 = unknownStatuses[1];
-        expect(s1.type).toEqual(StatusType.IN_PROGRESS);
+        expect(s1.stage).toEqual(StatusStage.IN_PROGRESS);
         expect(s1.name).toEqual('Unknown (d)');
 
         s1 = unknownStatuses[2];
-        expect(s1.type).toEqual(StatusType.DONE);
+        expect(s1.stage).toEqual(StatusStage.DONE);
         expect(s1.name).toEqual('Unknown (X)');
     });
 
@@ -272,10 +272,10 @@ describe('StatusRegistry', () => {
             // Arrange
             const statusRegistry = new StatusRegistry();
             statusRegistry.clearStatuses();
-            statusRegistry.add(new StatusConfiguration('<', 'Todo <', '<', false, StatusType.TODO));
-            statusRegistry.add(new StatusConfiguration('>', 'Todo >', '>', false, StatusType.TODO));
-            statusRegistry.add(new StatusConfiguration('"', 'Todo "', '"', false, StatusType.TODO));
-            statusRegistry.add(new StatusConfiguration('&', 'Todo &', '&', false, StatusType.TODO));
+            statusRegistry.add(new StatusConfiguration('Task','<', 'Todo <', '<', false, StatusStage.TODO));
+            statusRegistry.add(new StatusConfiguration('Task','>', 'Todo >', '>', false, StatusStage.TODO));
+            statusRegistry.add(new StatusConfiguration('Task','"', 'Todo "', '"', false, StatusStage.TODO));
+            statusRegistry.add(new StatusConfiguration('Task','&', 'Todo &', '&', false, StatusStage.TODO));
 
             // Assert
             // Without detail:
@@ -335,7 +335,7 @@ describe('StatusRegistry', () => {
             // Arrange
             const statusRegistry = new StatusRegistry();
             statusRegistry.clearStatuses();
-            statusRegistry.add(new StatusConfiguration(' ', 'Todo', '/', false, StatusType.TODO));
+            statusRegistry.add(new StatusConfiguration('Task',' ', 'Todo', '/', false, StatusStage.TODO));
             // Leave '/' as not registered
             const originalNumberOfStatuses = statusRegistry.registeredStatuses.length;
 
@@ -430,10 +430,10 @@ describe('StatusRegistry', () => {
             // Toggling code uses the global status registry, so we must explicitly modify that instance.
             // It will already have been reset in beforeEach() above.
             const globalStatusRegistry = StatusRegistry.getInstance();
-            const statusA = new Status(new StatusConfiguration('a', 'A', 'b', false));
-            const statusB = new Status(new StatusConfiguration('b', 'B', 'c', false));
-            const statusC = new Status(new StatusConfiguration('c', 'C', 'd', false));
-            const statusD = new Status(new StatusConfiguration('d', 'D', 'a', false));
+            const statusA = new Status(new StatusConfiguration('Task','a', 'A', 'b', false));
+            const statusB = new Status(new StatusConfiguration('Task','b', 'B', 'c', false));
+            const statusC = new Status(new StatusConfiguration('Task','c', 'C', 'd', false));
+            const statusD = new Status(new StatusConfiguration('Task','d', 'D', 'a', false));
             globalStatusRegistry.add(statusA);
             globalStatusRegistry.add(statusB);
             globalStatusRegistry.add(statusC);
@@ -467,7 +467,7 @@ describe('StatusRegistry', () => {
         it('should leave task valid if toggling to unknown status', () => {
             // Arrange
             const globalStatusRegistry = StatusRegistry.getInstance();
-            const important = new StatusConfiguration('!', 'Important', 'D', false);
+            const important = new StatusConfiguration('Task','!', 'Important', 'D', false);
             globalStatusRegistry.add(important);
 
             const line = '- [!] this is an important task';
@@ -523,25 +523,25 @@ describe('StatusRegistry', () => {
 
         it('should find IN_PROGRESS for next recurrence, when statuses are IN_PROGRESS then DONE', () => {
             const statuses: StatusCollection = [
-                ['1', '1 to 2', '2', 'IN_PROGRESS'],
-                ['2', '2 to 1', '1', 'DONE'],
+                ['Task','1', '1 to 2', '2', 'IN_PROGRESS'],
+                ['Task','2', '2 to 1', '1', 'DONE'],
             ];
             checkToggleAndRecurrenceStatuses(statuses, '1', '2', '1');
         });
 
         it('should find IN_PROGRESS for next recurrence, when statuses are DONE then IN_PROGRESS', () => {
             const statuses: StatusCollection = [
-                ['1', '1 to 2', '2', 'DONE'],
-                ['2', '2 to 1', '1', 'IN_PROGRESS'],
+                ['Task','1', '1 to 2', '2', 'DONE'],
+                ['Task','2', '2 to 1', '1', 'IN_PROGRESS'],
             ];
             checkToggleAndRecurrenceStatuses(statuses, '2', '1', '2');
         });
 
         it('should make CANCELLED next task IN_PROGRESS, if TODO not found', () => {
             const statuses: StatusCollection = [
-                ['/', '/ to x', 'x', 'IN_PROGRESS'],
-                ['x', 'x to -', '-', 'DONE'],
-                ['-', '- to /', '/', 'CANCELLED'],
+                ['Task','/', '/ to x', 'x', 'IN_PROGRESS'],
+                ['Task','x', 'x to -', '-', 'DONE'],
+                ['Task','-', '- to /', '/', 'CANCELLED'],
             ];
             // Ensure that the next status skips through to IN_PROGRESS for a recurring task, if TODO not found
             checkToggleAndRecurrenceStatuses(statuses, '/', 'x', '/');
@@ -552,9 +552,9 @@ describe('StatusRegistry', () => {
             // and ensure that this is chosen in preference to the TODO that is further ahead in the sequences
             // of statuses.
             const statuses: StatusCollection = [
-                ['T', 'T to D', 'D', 'TODO'],
-                ['D', 'D to I', 'I', 'DONE'],
-                ['I', 'I to T', 'T', 'IN_PROGRESS'],
+                ['Task','T', 'T to D', 'D', 'TODO'],
+                ['Task','D', 'D to I', 'I', 'DONE'],
+                ['Task','I', 'I to T', 'T', 'IN_PROGRESS'],
             ];
             // Ensure that TODO is chosen, ignoring the IN_PROGRESS task immediately after DONE:
             checkToggleAndRecurrenceStatuses(statuses, 'T', 'D', 'T');
@@ -564,18 +564,18 @@ describe('StatusRegistry', () => {
             const statuses: StatusCollection = [
                 // A set of 4 statuses, chosen to see whether the loop size in getNextRecurrenceStatusOrCreate()
                 // affects the calculation in any way.
-                ['A', 'A to B', 'B', 'NON_TASK'],
-                ['B', 'B to C', 'C', 'NON_TASK'],
-                ['C', 'C to D', 'D', 'NON_TASK'],
-                ['D', 'D to E', 'E', 'NON_TASK'],
+                ['Task','A', 'A to B', 'B', 'NON_TASK'],
+                ['Task','B', 'B to C', 'C', 'NON_TASK'],
+                ['Task','C', 'C to D', 'D', 'NON_TASK'],
+                ['Task','D', 'D to E', 'E', 'NON_TASK'],
                 // A cycle of 6 statuses, not including any TODOs,
                 // to ensure that the correct IN_PROGRESS is selected.
-                ['1', '1 to 2', '2', 'IN_PROGRESS'],
-                ['2', '2 to 3', '3', 'DONE'],
-                ['3', '3 to 4', '4', 'CANCELLED'],
-                ['4', '4 to 5', '5', 'IN_PROGRESS'],
-                ['5', '5 to 6', '6', 'DONE'],
-                ['6', '6 to 1', '1', 'CANCELLED'],
+                ['Task','1', '1 to 2', '2', 'IN_PROGRESS'],
+                ['Task','2', '2 to 3', '3', 'DONE'],
+                ['Task','3', '3 to 4', '4', 'CANCELLED'],
+                ['Task','4', '4 to 5', '5', 'IN_PROGRESS'],
+                ['Task','5', '5 to 6', '6', 'DONE'],
+                ['Task','6', '6 to 1', '1', 'CANCELLED'],
             ];
             // Ensure that the IN_PROGRESS soonest after 2 is chosen:
             checkToggleAndRecurrenceStatuses(statuses, '1', '2', '4');
@@ -584,26 +584,26 @@ describe('StatusRegistry', () => {
         it('should select the correct next status, even when it is unknown', () => {
             const statuses: StatusCollection = [
                 // A set where the DONE task goes to an unknown symbol
-                ['a', 'Status a', 'b', 'TODO'],
-                ['b', 'Status b', 'c', 'DONE'], // c is not known
+                ['Task','a', 'Status a', 'b', 'TODO'],
+                ['Task','b', 'Status b', 'c', 'DONE'], // c is not known
             ];
             checkToggleAndRecurrenceStatuses(statuses, 'a', 'b', 'c');
         });
 
         it('should return space for symbol if there are no TODO or IN_PROGRESS in sequence', () => {
             const statuses: StatusCollection = [
-                [' ', 'Todo', 'x', 'TODO'],
-                ['x', 'Done', ' ', 'DONE'],
-                ['C', 'C to D', 'D', 'CANCELLED'],
-                ['D', 'D to C', 'C', 'DONE'],
+                ['Task', ' ', 'Todo', 'x', 'TODO'],
+                ['Task','x', 'Done', ' ', 'DONE'],
+                ['Task','C', 'C to D', 'D', 'CANCELLED'],
+                ['Task','D', 'D to C', 'C', 'DONE'],
             ];
             checkToggleAndRecurrenceStatuses(statuses, 'C', 'D', ' ');
         });
 
         it('should return space for symbol if it is not a known status', () => {
             const statuses: StatusCollection = [
-                ['C', 'C to D', 'D', 'CANCELLED'],
-                ['D', 'D to C', 'C', 'DONE'],
+                ['Task','C', 'C to D', 'D', 'CANCELLED'],
+                ['Task','D', 'D to C', 'C', 'DONE'],
             ];
             checkToggleAndRecurrenceStatuses(statuses, 'C', 'D', ' ');
         });

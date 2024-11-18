@@ -3,7 +3,7 @@ Processed 166 files (1.1s) (17 warnings)
 1) Config/Settings.ts > Suggestor/Suggestor.ts
 2) Task/Task.ts > Config/Settings.ts > Suggestor/Suggestor.ts
 3) Task/Task.ts > Config/Settings.ts > Suggestor/Suggestor.ts > Task/TaskDependency.ts
-4) Task/Task.ts > Config/Settings.ts > Suggestor/Suggestor.ts > TaskSerializer/DefaultTaskSerializer.ts > Task/OnCompletion.ts
+4) Task/Task.ts > Config/Settings.ts > Suggestor/Suggestor.ts > TaskSerializer/DefaultTaskSerializer.ts > Task/OnHook.ts
 5) Task/Task.ts > Config/Settings.ts > Suggestor/Suggestor.ts > TaskSerializer/DefaultTaskSerializer.ts
 6) Task/Task.ts > Config/Settings.ts > Suggestor/Suggestor.ts > ui/DependencyHelpers.ts
 7) Task/Task.ts > Config/Settings.ts > TaskSerializer/DataviewTaskSerializer.ts

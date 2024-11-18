@@ -192,11 +192,11 @@ describe('statuses', () => {
         ['task.status.symbol', [['sort by function task.status.symbol', 'Sort by the status symbol']], tasks],
 
         [
-            'task.status.type',
+            'task.status.stage',
             [
                 [
-                    'sort by function task.status.type',
-                    'Unlike "Sort by status.type", this sorts the status types in alphabetical order',
+                    'sort by function task.status.stage',
+                    'Unlike "Sort by status.stage", this sorts the status stages in alphabetical order',
                 ],
             ],
             tasks,
@@ -310,7 +310,7 @@ describe('other properties', () => {
                 [
                     'sort by function !task.isDone',
                     '`sort by function` sorts `true` before `false`',
-                    'Hence, we use `!` to negate `task.isDone`, so tasks with [[Status Types|Status Type]] `TODO` and `IN_PROGRESS` tasks are sorted **before** `DONE`, `CANCELLED` and `NON_TASK`.',
+                    'Hence, we use `!` to negate `task.isDone`, so tasks with [[Status Stages|Status Stage]] `TODO` and `IN_PROGRESS` tasks are sorted **before** `DONE`, `CANCELLED` and `NON_TASK`.',
                 ],
             ],
             SampleTasks.withAllStatuses(),

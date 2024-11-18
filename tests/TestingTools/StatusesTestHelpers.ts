@@ -4,8 +4,8 @@ import { Status } from '../../src/Statuses/Status';
 import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
 
 export const coreStatusesData: StatusCollection = [
-    [' ', 'Todo', 'x', 'TODO'],
-    ['x', 'Done', ' ', 'DONE'],
+    ['Task',' ', 'Todo', 'x', 'TODO'],
+    ['Task','x', 'Done', ' ', 'DONE'],
 ];
 
 export function createStatuses(

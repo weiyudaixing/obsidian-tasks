@@ -73,20 +73,20 @@ describe('Serializer', () => {
         });
     });
 
-    describe('OnCompletion', () => {
-        function allOnCompletionLines() {
-            const tasks = SampleTasks.withSampleOnCompletionValues();
+    describe('OnHook', () => {
+        function allOnHookLines() {
+            const tasks = SampleTasks.withSampleOnHookValues();
             return tasks.map((t) => t.toFileLineString()).join('\n');
         }
 
         it.each(Object.keys(TASK_FORMATS))('%s-snippet', (key: string) => {
             updateSettings({ taskFormat: key as keyof TASK_FORMATS });
-            verifyMarkdown(allOnCompletionLines());
+            verifyMarkdown(allOnHookLines());
         });
 
         it.each(Object.keys(TASK_FORMATS))('%s-include', (key: string) => {
             updateSettings({ taskFormat: key as keyof TASK_FORMATS });
-            verifyMarkdownForDocs(allOnCompletionLines());
+            verifyMarkdownForDocs(allOnHookLines());
         });
     });
 

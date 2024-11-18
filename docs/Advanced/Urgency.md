@@ -233,11 +233,11 @@ We are tracking this ordering limitation in [issue #1505](https://github.com/obs
 
 If you wish to sort by status, and include tasks which may be complete, this gives misleading results, as old completed tasks will appear first.
 
-The workaround for this is to first sort by [[Status Types|Status Type]]:
+The workaround for this is to first sort by [[Status Stages|Status Stage]]:
 
 ````text
 ```tasks
-sort by status.type
+sort by status.stage
 sort by urgency
 ```
 ````

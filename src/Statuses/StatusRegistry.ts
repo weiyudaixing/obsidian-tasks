@@ -1,6 +1,6 @@
 import { htmlEncodeCharacter, htmlEncodeString } from '../lib/HTMLCharacterEntities';
 import { Status } from './Status';
-import { StatusConfiguration, StatusType } from './StatusConfiguration';
+import { StatusConfiguration, StatusStage } from './StatusConfiguration';
 
 /**
  * Tracks all the registered statuses a task can have.
@@ -33,7 +33,7 @@ export class StatusRegistry {
      * @memberof StatusRegistry
      */
     public constructor() {
-        this.addDefaultStatusTypes();
+        this.addDefaultStatusStages();
     }
 
     /**
@@ -147,17 +147,17 @@ export class StatusRegistry {
     }
 
     /**
-     * Resets the array of Status types to the default statuses.
+     * Resets the array of Status stages to the default statuses.
      *
      * @memberof StatusRegistry
      */
     public resetToDefaultStatuses(): void {
         this.clearStatuses();
-        this.addDefaultStatusTypes();
+        this.addDefaultStatusStages();
     }
 
     /**
-     * Clears the array of Status types to be empty.
+     * Clears the array of Status stages to be empty.
      */
     public clearStatuses(): void {
         this._registeredStatuses = [];
@@ -191,7 +191,7 @@ export class StatusRegistry {
      */
     public getNextStatusOrCreate(status: Status): Status {
         const nextStatus = this.getNextStatus(status);
-        if (nextStatus.type !== StatusType.EMPTY) {
+        if (nextStatus.stage !== StatusStage.EMPTY) {
             return nextStatus;
         }
         // status is configured to advance to a symbol that is not registered.
@@ -203,22 +203,22 @@ export class StatusRegistry {
      * Return the status to use for a recurring task that has just been completed.
      *
      * If the next status is not TODO:
-     *   - it first advances through the next statuses until it finds a {@link StatusType.TODO} status - which it returns
-     *   - or it then advances through the next statuses until it finds an {@link StatusType.IN_PROGRESS} status - which it returns
+     *   - it first advances through the next statuses until it finds a {@link StatusStage.TODO} status - which it returns
+     *   - or it then advances through the next statuses until it finds an {@link StatusStage.IN_PROGRESS} status - which it returns
      *   - otherwise, it uses the status with symbol 'space', which is the default 'TODO' status.
      *
      * @param newStatus - the new status of the task that has just been toggled, which
-     *                    is expected to be of type {@link StatusType.DONE}, but this is not checked.
+     *                    is expected to be of type {@link StatusStage.DONE}, but this is not checked.
      */
     public getNextRecurrenceStatusOrCreate(newStatus: Status) {
         const nextStatus = this.getNextStatusOrCreate(newStatus);
 
-        const result1 = this.getNextRecurrenceStatusOfType(nextStatus, StatusType.TODO);
+        const result1 = this.getNextRecurrenceStatusOfStage(nextStatus, StatusStage.TODO);
         if (result1) {
             return result1;
         }
 
-        const result2 = this.getNextRecurrenceStatusOfType(nextStatus, StatusType.IN_PROGRESS);
+        const result2 = this.getNextRecurrenceStatusOfStage(nextStatus, StatusStage.IN_PROGRESS);
         if (result2) {
             return result2;
         }
@@ -227,13 +227,13 @@ export class StatusRegistry {
         // This ensures that the new recurrence is always found by 'not done' searches,
         // for safety in vaults where users did not fully set up all statuses.
         // This makes the simplifying assumption that no user is likely to change the
-        // status type of space to anything other than TODO - but if they do, it's not
+        // status stage of space to anything other than TODO - but if they do, it's not
         // our problem.
         return this.bySymbolOrCreate(' ');
     }
 
-    private getNextRecurrenceStatusOfType(nextStatus: Status, wanted: StatusType) {
-        if (nextStatus.type === wanted) {
+    private getNextRecurrenceStatusOfStage(nextStatus: Status, wanted: StatusStage) {
+        if (nextStatus.stage === wanted) {
             return nextStatus;
         }
         let searchStatus = nextStatus;
@@ -241,7 +241,7 @@ export class StatusRegistry {
         // configured statuses, we ensure it doesn't continue indefinitely.
         for (let i = 0; i < this.registeredStatuses.length - 1; i++) {
             searchStatus = this.getNextStatusOrCreate(searchStatus);
-            if (searchStatus.type === wanted) {
+            if (searchStatus.stage === wanted) {
                 return searchStatus;
             }
         }
@@ -250,7 +250,7 @@ export class StatusRegistry {
 
     /**
      * Find any statuses in the given list that are not known to this registry.
-     * This can be used to add all unknown status types to the settings,
+     * This can be used to add all unknown status stages to the settings,
      * to save users from having to do that manually.
      *
      * Statuses are returned in the order that they are first found in the
@@ -289,17 +289,18 @@ export class StatusRegistry {
 
     private static copyStatusWithNewName(s: Status, newName: string) {
         const statusConfiguration = new StatusConfiguration(
+            s.objectClass,
             s.symbol,
             newName,
             s.nextStatusSymbol,
             s.availableAsCommand,
-            s.type,
+            s.stage,
         );
         return new Status(statusConfiguration);
     }
 
     /**
-     * Filters the Status types by the symbol and returns the first one found.
+     * Filters the Status stages by the symbol and returns the first one found.
      *
      * @private
      * @param {string} symbolToFind
@@ -311,7 +312,7 @@ export class StatusRegistry {
     }
 
     /**
-     * Filters all the Status types by the symbol and returns true if found.
+     * Filters all the Status stages by the symbol and returns true if found.
      *
      * @private
      * @param {string} symbolToFind
@@ -327,13 +328,13 @@ export class StatusRegistry {
     }
 
     /**
-     * Checks the registry and adds the default status types.
+     * Checks the registry and adds the default status stages.
      *
      * @private
      * @memberof StatusRegistry
      */
-    private addDefaultStatusTypes(): void {
-        const defaultStatuses = [Status.TODO, Status.IN_PROGRESS, Status.DONE, Status.CANCELLED];
+    private addDefaultStatusStages(): void {
+        const defaultStatuses = [Status.TODO, Status.IN_PROGRESS, Status.DONE, Status.ARCHIVED, Status.CANCELLED, Status.HOOK];
 
         defaultStatuses.forEach((status) => {
             this.add(status);
@@ -348,7 +349,7 @@ export class StatusRegistry {
      *
      * Note: Any of the 'next status symbols' that are not in the registry are ignored, and invisible.
      *
-     * @param {boolean} includeDetails - whether to include the status symbols and types in the diagram. Defaults to false.
+     * @param {boolean} includeDetails - whether to include the status symbols and stages in the diagram. Defaults to false.
      */
     public mermaidDiagram(includeDetails = false) {
         const uniqueStatuses = this.registeredStatuses;
@@ -367,7 +368,7 @@ export class StatusRegistry {
 
             // For recurring tasks, if Tasks would override the next status after a DONE task,
             // to force it to be TODO or IN_PROGRESS, then we want to show this visually.
-            if (status.type === StatusType.DONE) {
+            if (status.stage === StatusStage.DONE) {
                 const nextRecurringStatus = this.getNextRecurrenceStatusOrCreate(status);
                 const nextRecurringTypeDiffers = nextRecurringStatus.symbol !== nextStatus.symbol;
                 if (nextRecurringTypeDiffers) {
@@ -403,7 +404,7 @@ linkStyle default stroke:gray
     ) {
         const nextStatusIndex = uniqueStatuses.findIndex((status) => status.symbol === nextStatus.symbol);
         const nextStatusIsKnown = nextStatusIndex !== -1;
-        const nextStatusIsNotInternal = nextStatus.type !== StatusType.EMPTY;
+        const nextStatusIsNotInternal = nextStatus.stage !== StatusStage.EMPTY;
 
         if (nextStatusIsKnown && nextStatusIsNotInternal) {
             let joiner;
@@ -419,18 +420,18 @@ linkStyle default stroke:gray
 
     private getMermaidNodeLabel(status: Status, includeDetails: boolean) {
         const statusName = htmlEncodeString(status.name);
-        const statusType = status.type;
+        const statusStage = status.stage;
         if (includeDetails) {
             const statusSymbol = htmlEncodeCharacter(status.symbol);
             const statusNextStatusSymbol = htmlEncodeCharacter(status.nextStatusSymbol);
 
             const transitionText = `[${statusSymbol}] -> [${statusNextStatusSymbol}]`;
             const statusNameText = `'${statusName}'`;
-            const statusTypeText = `(${statusType})`;
+            const statusStageText = `(${statusStage})`;
 
-            return `["${statusNameText}<br>${transitionText}<br>${statusTypeText}"]:::${statusType}`;
+            return `["${statusNameText}<br>${transitionText}<br>${statusStageText}"]:::${statusStage}`;
         } else {
-            return `["${statusName}"]:::${statusType}`;
+            return `["${statusName}"]:::${statusStage}`;
         }
     }
 }

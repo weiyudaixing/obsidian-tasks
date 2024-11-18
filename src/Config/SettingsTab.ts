@@ -1,5 +1,5 @@
 import { Notice, PluginSettingTab, Setting, debounce } from 'obsidian';
-import { StatusConfiguration, StatusType } from '../Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../Statuses/StatusConfiguration';
 import type TasksPlugin from '../main';
 import { StatusRegistry } from '../Statuses/StatusRegistry';
 import { Status } from '../Statuses/Status';
@@ -59,8 +59,8 @@ export class SettingsTab extends PluginSettingTab {
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
                     '<p>The format that Tasks uses to read and write tasks.</p>' +
-                        '<p><b>Important:</b> Tasks currently only supports one format at a time. Selecting Dataview will currently <b>stop Tasks reading its own emoji signifiers</b>.</p>' +
-                        '<p>See the <a href="https://publish.obsidian.md/tasks/Reference/Task+Formats/About+Task+Formats">documentation</a>.</p>',
+                    '<p><b>Important:</b> Tasks currently only supports one format at a time. Selecting Dataview will currently <b>stop Tasks reading its own emoji signifiers</b>.</p>' +
+                    '<p>See the <a href="https://publish.obsidian.md/tasks/Reference/Task+Formats/About+Task+Formats">documentation</a>.</p>',
                 ),
             )
             .addDropdown((dropdown) => {
@@ -84,11 +84,11 @@ export class SettingsTab extends PluginSettingTab {
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
                     '<p><b>Recommended: Leave empty if you want all checklist items in your vault to be tasks managed by this plugin.</b></p>' +
-                        '<p>Use a global filter if you want Tasks to only act on a subset of your "<code>- [ ]</code>" checklist items, so that ' +
-                        'a checklist item must include the specified string in its description in order to be considered a task.<p>' +
-                        '<p>For example, if you set the global filter to <code>#task</code>, the Tasks plugin will only handle checklist items tagged with <code>#task</code>.</br>' +
-                        'Other checklist items will remain normal checklist items and not appear in queries or get a done date set.</p>' +
-                        '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Global+Filter">documentation</a>.</p>',
+                    '<p>Use a global filter if you want Tasks to only act on a subset of your "<code>- [ ]</code>" checklist items, so that ' +
+                    'a checklist item must include the specified string in its description in order to be considered a task.<p>' +
+                    '<p>For example, if you set the global filter to <code>#task</code>, the Tasks plugin will only handle checklist items tagged with <code>#task</code>.</br>' +
+                    'Other checklist items will remain normal checklist items and not appear in queries or get a done date set.</p>' +
+                    '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Global+Filter">documentation</a>.</p>',
                 ),
             )
             .addText((text) => {
@@ -130,8 +130,8 @@ export class SettingsTab extends PluginSettingTab {
                 .setDesc(
                     SettingsTab.createFragmentWithHTML(
                         '<p>A query that is automatically included at the start of every Tasks block in the vault.' +
-                            ' Useful for adding default filters, or layout options.</p>' +
-                            '<p>See the <a href="https://publish.obsidian.md/tasks/Queries/Global+Query">documentation</a>.</p>',
+                        ' Useful for adding default filters, or layout options.</p>' +
+                        '<p>See the <a href="https://publish.obsidian.md/tasks/Queries/Global+Query">documentation</a>.</p>',
                     ),
                 )
                 .addTextArea((text) => {
@@ -169,7 +169,7 @@ export class SettingsTab extends PluginSettingTab {
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
                     "Enabling this will add a timestamp ➕ YYYY-MM-DD before other date values, when a task is created with 'Create or edit task', or by completing a recurring task.</br>" +
-                        '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Dates#Created+date">documentation</a>.</p>',
+                    '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Dates#Created+date">documentation</a>.</p>',
                 ),
             )
             .addToggle((toggle) => {
@@ -185,7 +185,7 @@ export class SettingsTab extends PluginSettingTab {
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
                     'Enabling this will add a timestamp ✅ YYYY-MM-DD at the end when a task is toggled to done.</br>' +
-                        '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Dates#Done+date">documentation</a>.</p>',
+                    '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Dates#Done+date">documentation</a>.</p>',
                 ),
             )
             .addToggle((toggle) => {
@@ -201,7 +201,7 @@ export class SettingsTab extends PluginSettingTab {
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
                     'Enabling this will add a timestamp ❌ YYYY-MM-DD at the end when a task is toggled to cancelled.</br>' +
-                        '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Dates#Cancelled+date">documentation</a>.</p>',
+                    '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Dates#Cancelled+date">documentation</a>.</p>',
                 ),
             )
             .addToggle((toggle) => {
@@ -223,10 +223,10 @@ export class SettingsTab extends PluginSettingTab {
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
                     'Save time entering Scheduled (⏳) dates.</br>' +
-                        'If this option is enabled, any undated tasks will be given a default Scheduled date extracted from their file name.</br>' +
-                        'By default, Tasks plugin will match both <code>YYYY-MM-DD</code> and <code>YYYYMMDD</code> date formats.</br>' +
-                        'Undated tasks have none of Due (📅 ), Scheduled (⏳) and Start (🛫) dates.</br>' +
-                        '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Use+Filename+as+Default+Date">documentation</a>.</p>',
+                    'If this option is enabled, any undated tasks will be given a default Scheduled date extracted from their file name.</br>' +
+                    'By default, Tasks plugin will match both <code>YYYY-MM-DD</code> and <code>YYYYMMDD</code> date formats.</br>' +
+                    'Undated tasks have none of Due (📅 ), Scheduled (⏳) and Start (🛫) dates.</br>' +
+                    '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Use+Filename+as+Default+Date">documentation</a>.</p>',
                 ),
             )
             .addToggle((toggle) => {
@@ -244,7 +244,7 @@ export class SettingsTab extends PluginSettingTab {
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
                     'An additional date format that Tasks plugin will recogize when using the file name as the Scheduled date for undated tasks.</br>' +
-                        '<p><a href="https://momentjs.com/docs/#/displaying/format/">Syntax Reference</a></p>',
+                    '<p><a href="https://momentjs.com/docs/#/displaying/format/">Syntax Reference</a></p>',
                 ),
             )
             .addText((text) => {
@@ -286,7 +286,7 @@ export class SettingsTab extends PluginSettingTab {
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
                     'Enabling this will make the next recurrence of a task appear on the line below the completed task. Otherwise the next recurrence will appear before the completed one.</br>' +
-                        '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Recurring+Tasks">documentation</a>.</p>',
+                    '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Recurring+Tasks">documentation</a>.</p>',
                 ),
             )
             .addToggle((toggle) => {
@@ -308,7 +308,7 @@ export class SettingsTab extends PluginSettingTab {
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
                     'Enabling this will open an intelligent suggest menu while typing inside a recognized task line.</br>' +
-                        '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Auto-Suggest">documentation</a>.</p>',
+                    '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Auto-Suggest">documentation</a>.</p>',
                 ),
             )
             .addToggle((toggle) => {
@@ -366,10 +366,10 @@ export class SettingsTab extends PluginSettingTab {
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
                     'If the access keys (keyboard shortcuts) for various controls' +
-                        ' in dialog boxes conflict with system keyboard shortcuts' +
-                        ' or assistive technology functionality that is important for you,' +
-                        ' you may want to deactivate them here.</br>' +
-                        '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Create+or+edit+Task#Keyboard+shortcuts">documentation</a>.</p>',
+                    ' in dialog boxes conflict with system keyboard shortcuts' +
+                    ' or assistive technology functionality that is important for you,' +
+                    ' you may want to deactivate them here.</br>' +
+                    '<p>See the <a href="https://publish.obsidian.md/tasks/Getting+Started/Create+or+edit+Task#Keyboard+shortcuts">documentation</a>.</p>',
                 ),
             )
             .addToggle((toggle) => {
@@ -527,10 +527,10 @@ export class SettingsTab extends PluginSettingTab {
         const { statusSettings } = getSettings();
 
         /* -------------------- One row per core status in the settings -------------------- */
-        statusSettings.coreStatuses.forEach((status_type) => {
+        statusSettings.coreStatuses.forEach((status_stage) => {
             createRowForTaskStatus(
                 containerEl,
-                status_type,
+                status_stage,
                 statusSettings.coreStatuses,
                 statusSettings,
                 settings,
@@ -581,10 +581,10 @@ export class SettingsTab extends PluginSettingTab {
         const { statusSettings } = getSettings();
 
         /* -------------------- One row per custom status in the settings -------------------- */
-        statusSettings.customStatuses.forEach((status_type) => {
+        statusSettings.customStatuses.forEach((status_stage) => {
             createRowForTaskStatus(
                 containerEl,
-                status_type,
+                status_stage,
                 statusSettings.customStatuses,
                 statusSettings,
                 settings,
@@ -603,14 +603,14 @@ export class SettingsTab extends PluginSettingTab {
                 .onClick(async () => {
                     StatusSettings.addStatus(
                         statusSettings.customStatuses,
-                        new StatusConfiguration('', '', '', false, StatusType.TODO),
+                        new StatusConfiguration('', '', '', false, StatusStage.TODO),
                     );
                     await updateAndSaveStatusSettings(statusSettings, settings);
                 });
         });
         setting.infoEl.remove();
 
-        /* -------------------- Add all Status types supported by ... buttons -------------------- */
+        /* -------------------- Add all Status stages supported by ... buttons -------------------- */
         type NamedTheme = [string, StatusCollection];
         const themes: NamedTheme[] = [
             // Light and Dark themes - alphabetical order
@@ -634,10 +634,10 @@ export class SettingsTab extends PluginSettingTab {
             addStatusesSupportedByThisTheme.infoEl.remove();
         }
 
-        /* -------------------- 'Add All Unknown Status Types' button -------------------- */
+        /* -------------------- 'Add All Unknown Status Stages' button -------------------- */
         const addAllUnknownStatuses = new Setting(containerEl).addButton((button) => {
             button
-                .setButtonText('Add All Unknown Status Types')
+                .setButtonText('Add All Unknown Status Stages')
                 .setCta()
                 .onClick(async () => {
                     const tasks = this.plugin.getTasks();
@@ -656,10 +656,10 @@ export class SettingsTab extends PluginSettingTab {
         });
         addAllUnknownStatuses.infoEl.remove();
 
-        /* -------------------- 'Reset Custom Status Types to Defaults' button -------------------- */
+        /* -------------------- 'Reset Custom Status Stages to Defaults' button -------------------- */
         const clearCustomStatuses = new Setting(containerEl).addButton((button) => {
             button
-                .setButtonText('Reset Custom Status Types to Defaults')
+                .setButtonText('Reset Custom Status Stages to Defaults')
                 .setWarning()
                 .onClick(async () => {
                     StatusSettings.resetAllCustomStatuses(statusSettings);
@@ -671,18 +671,18 @@ export class SettingsTab extends PluginSettingTab {
 }
 
 /**
- * Create the row to see and modify settings for a single task status type.
+ * Create the row to see and modify settings for a single task status stage.
  * @param containerEl
- * @param statusType - The status type to be edited.
- * @param statuses - The list of statuses that statusType is stored in.
- * @param statusSettings - All the status types already in the user's settings, EXCEPT the standard ones.
+ * @param statusStage - The status stage to be edited.
+ * @param statuses - The list of statuses that statusStage is stored in.
+ * @param statusSettings - All the status stages already in the user's settings, EXCEPT the standard ones.
  * @param settings
  * @param plugin
  * @param isCoreStatus - whether the status is a core status
  */
 function createRowForTaskStatus(
     containerEl: HTMLElement,
-    statusType: StatusConfiguration,
+    statusStage: StatusConfiguration,
     statuses: StatusConfiguration[],
     statusSettings: StatusSettings,
     settings: SettingsTab,
@@ -693,7 +693,7 @@ function createRowForTaskStatus(
 
     const taskStatusPreview = containerEl.createEl('pre');
     taskStatusPreview.addClass('row-for-status');
-    taskStatusPreview.textContent = new Status(statusType).previewText();
+    taskStatusPreview.textContent = new Status(statusStage).previewText();
 
     const setting = new Setting(containerEl);
 
@@ -705,7 +705,7 @@ function createRowForTaskStatus(
                 .setIcon('cross')
                 .setTooltip('Delete')
                 .onClick(async () => {
-                    if (StatusSettings.deleteStatus(statuses, statusType)) {
+                    if (StatusSettings.deleteStatus(statuses, statusStage)) {
                         await updateAndSaveStatusSettings(statusSettings, settings);
                     }
                 });
@@ -717,11 +717,11 @@ function createRowForTaskStatus(
             .setIcon('pencil')
             .setTooltip('Edit')
             .onClick(async () => {
-                const modal = new CustomStatusModal(plugin, statusType, isCoreStatus);
+                const modal = new CustomStatusModal(plugin, statusStage, isCoreStatus);
 
                 modal.onClose = async () => {
                     if (modal.saved) {
-                        if (StatusSettings.replaceStatus(statuses, statusType, modal.statusConfiguration())) {
+                        if (StatusSettings.replaceStatus(statuses, statusStage, modal.statusConfiguration())) {
                             await updateAndSaveStatusSettings(statusSettings, settings);
                         }
                     }
@@ -748,14 +748,14 @@ async function addCustomStatesToSettings(
     await updateAndSaveStatusSettings(statusSettings, settings);
 }
 
-async function updateAndSaveStatusSettings(statusTypes: StatusSettings, settings: SettingsTab) {
+async function updateAndSaveStatusSettings(statusStages: StatusSettings, settings: SettingsTab) {
     updateSettings({
-        statusSettings: statusTypes,
+        statusSettings: statusStages,
     });
 
     // Update the active statuses.
     // This saves the user from having to restart Obsidian in order to apply the changed status(es).
-    StatusSettings.applyToStatusRegistry(statusTypes, StatusRegistry.getInstance());
+    StatusSettings.applyToStatusRegistry(statusStages, StatusRegistry.getInstance());
 
     await settings.saveSettings(true);
 }

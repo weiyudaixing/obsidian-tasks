@@ -2,10 +2,10 @@ import { Occurrence } from '../../src/Task/Occurrence';
 import { Task } from '../../src/Task/Task';
 import { Recurrence } from '../../src/Task/Recurrence';
 import { Status } from '../../src/Statuses/Status';
-import { StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusStage } from '../../src/Statuses/StatusConfiguration';
 import { Priority } from '../../src/Task/Priority';
 import { PriorityTools } from '../../src/lib/PriorityTools';
-import { OnCompletion } from '../../src/Task/OnCompletion';
+import { OnHook} from '../../src/Task/OnHook';
 import { TaskBuilder } from './TaskBuilder';
 import { fromLine, fromLines } from './TestHelpers';
 
@@ -175,7 +175,7 @@ export class SampleTasks {
         });
     }
 
-    public static withAllStatusTypes(): Task[] {
+    public static withAllStatusStages(): Task[] {
         // Abbreviated names so that the markdown text is aligned
         const todoTask = fromLine({ line: '- [ ] Todo' });
         const inprTask = fromLine({ line: '- [/] In progress' });
@@ -183,7 +183,7 @@ export class SampleTasks {
         const cancTask = fromLine({ line: '- [-] Cancelled' });
         const unknTask = fromLine({ line: '- [%] Unknown' });
         const non_Task = new TaskBuilder()
-            .statusValues('^', 'non-task', 'x', false, StatusType.NON_TASK)
+            .statusValues('Task','^', 'non-task', 'x', false, StatusStage.NON_TASK)
             .description('Non-task')
             .build();
         const emptTask = new TaskBuilder().status(Status.EMPTY).description('Empty task').build();
@@ -281,7 +281,7 @@ export class SampleTasks {
         });
     }
 
-    public static withSampleOnCompletionValues() {
+    public static withSampleOnHookValues() {
         const everyDay = Recurrence.fromText({
             recurrenceRuleText: 'every day',
             occurrence: new Occurrence({
@@ -291,12 +291,12 @@ export class SampleTasks {
             }),
         });
         return [
-            new TaskBuilder().description('#task Keep this task when done').onCompletion(OnCompletion.Ignore),
-            new TaskBuilder().description('#task Keep this task when done too').onCompletion(OnCompletion.Keep),
-            new TaskBuilder().description('#task Remove this task when done').onCompletion(OnCompletion.Delete),
+            new TaskBuilder().description('#task Keep this task when hook').onHook(OnHook.Ignore),
+            new TaskBuilder().description('#task Keep this task when hook too').onHook(OnHook.Keep),
+            new TaskBuilder().description('#task Remove this task when hook').onHook(OnHook.Delete),
             new TaskBuilder()
-                .description('#task Remove completed instance of this recurring task when done')
-                .onCompletion(OnCompletion.Delete)
+                .description('#task Remove hooked instance of this recurring task when done')
+                .onHook(OnHook.Delete)
                 .recurrence(everyDay),
         ].map((builder) => builder.build());
     }

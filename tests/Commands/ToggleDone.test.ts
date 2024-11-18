@@ -8,7 +8,7 @@ import { getNewCursorPosition, toggleLine } from '../../src/Commands/ToggleDone'
 import { GlobalFilter } from '../../src/Config/GlobalFilter';
 import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
 import { Status } from '../../src/Statuses/Status';
-import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../src/Statuses/StatusConfiguration';
 
 window.moment = moment;
 
@@ -190,8 +190,8 @@ describe('ToggleDone', () => {
         // Arrange
         const statusRegistry = StatusRegistry.getInstance();
         statusRegistry.resetToDefaultStatuses();
-        statusRegistry.add(new Status(new StatusConfiguration('P', 'Pro', 'C', false)));
-        statusRegistry.add(new Status(new StatusConfiguration('C', 'Con', 'P', false)));
+        statusRegistry.add(new Status(new StatusConfiguration('Task','P', 'Pro', 'C', false)));
+        statusRegistry.add(new Status(new StatusConfiguration('Task','C', 'Con', 'P', false)));
 
         it('when there is no global filter', () => {
             const line1 = '- [P] this is a task starting at Pro';
@@ -237,7 +237,7 @@ describe('ToggleDone', () => {
             const statusRegistry = StatusRegistry.getInstance();
             statusRegistry.resetToDefaultStatuses();
             statusRegistry.set([
-                new Status(new StatusConfiguration('x', 'Done', '-', false, StatusType.DONE)),
+                new Status(new StatusConfiguration('Task', 'x', 'Done', '-', false, StatusStage.DONE)),
                 ...statusRegistry.registeredStatuses,
             ]);
 
@@ -253,8 +253,8 @@ describe('ToggleDone', () => {
             const statusRegistry = StatusRegistry.getInstance();
             statusRegistry.resetToDefaultStatuses();
             statusRegistry.set([
-                new Status(new StatusConfiguration('1', '1', '2', false, StatusType.IN_PROGRESS)),
-                new Status(new StatusConfiguration('2', '2', '1', false, StatusType.DONE)),
+                new Status(new StatusConfiguration('Task','1', '1', '2', false, StatusStage.IN_PROGRESS)),
+                new Status(new StatusConfiguration('Task','2', '2', '1', false, StatusStage.DONE)),
             ]);
 
             testToggleLine(

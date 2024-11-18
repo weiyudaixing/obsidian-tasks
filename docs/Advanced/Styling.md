@@ -88,7 +88,7 @@ To help visualise the structure above, here is the HTML for a sample task shown 
   data-task=""
   data-line="0"
   data-task-status-name="Todo"
-  data-task-status-type="TODO">
+  data-task-status-stage="TODO">
   <input class="task-list-item-checkbox" type="checkbox" title="Right-click for options" data-line="0" />
   <span class="tasks-list-text">
     <span class="task-description"><span>Do exercises #todo #health</span></span>
@@ -146,7 +146,7 @@ Here is the same task in [[Layout#Short Mode|short mode]]. The only difference i
   data-task=""
   data-line="0"
   data-task-status-name="Todo"
-  data-task-status-type="TODO">
+  data-task-status-stage="TODO">
   <input class="task-list-item-checkbox" type="checkbox" title="Right-click for options" data-line="0" />
   <span class="tasks-list-text">
     <span class="task-description"><span>Do exercises #todo #health</span></span>
@@ -242,10 +242,10 @@ See [[How to style buttons]] for a variety of ways to style the Edit and Postpon
 Task statuses are represented by a few data attributes, all set on the `task-list-item` `LI` element:
 
 - `data-task` contains the *status symbol*, e.g. "" for a regular TODO, "x" for a regular DONE, or any other symbols that you use.
-- `data-task-status-type` contains the *status type*, e.g. "TODO", "DONE", "IN_PROGRESS".
+- `data-task-status-stage` contains the *status stage*, e.g. "TODO", "DONE", "IN_PROGRESS".
 - `data-task-status-name` contains the *status name*, e.g. "Todo", "Done", "In Progress".
 
-These attributes can be used to style tasks according to their status, with the status type being the preferred selector in most cases.
+These attributes can be used to style tasks according to their status, with the status stage being the preferred selector in most cases.
 
 ## Limitations of styling
 
@@ -388,15 +388,15 @@ For example, in Reading mode:
 
 This screenshot was taken with the Prism theme selected, to style the checkboxes. The `!important` [flag](https://developer.mozilla.org/en-US/docs/Web/CSS/important) is needed to override the theme's opinion about shadows.
 
-#### Status Types
+#### Status Stages
 
-Alternatively, you can use the status type to write rules that are independent of the status symbol.
+Alternatively, you can use the status stage to write rules that are independent of the status symbol.
 Here, we put a green halo around all actionable tasks:
 
-<!-- snippet: resources/sample_vaults/Tasks-Demo/.obsidian/snippets/tasks-plugin-style-status-types.css -->
+<!-- snippet: resources/sample_vaults/Tasks-Demo/.obsidian/snippets/tasks-plugin-style-status-stages.css -->
 ```css
-li.task-list-item[data-task-status-type="TODO"] .task-list-item-checkbox,
-li.task-list-item[data-task-status-type="IN_PROGRESS"] .task-list-item-checkbox {
+li.task-list-item[data-task-status-stage="TODO"] .task-list-item-checkbox,
+li.task-list-item[data-task-status-stage="IN_PROGRESS"] .task-list-item-checkbox {
     box-shadow: 0 0 10px green !important;
 }
 ```
@@ -404,7 +404,7 @@ li.task-list-item[data-task-status-type="IN_PROGRESS"] .task-list-item-checkbox 
 
 For example, in Reading mode:
 
-![Example of tasks-plugin-style-status-types.css snippet](../../images/tasks-plugin-style-status-types-snippet.png)
+![Example of tasks-plugin-style-status-stages.css snippet](../../images/tasks-plugin-style-status-stages-snippet.png)
 
 Again, the screenshot was taken with the Prism theme and the `!important` [flag](https://developer.mozilla.org/en-US/docs/Web/CSS/important) is needed to override the theme's opinion about shadows.
 
@@ -415,16 +415,16 @@ The following rules mark 'today' due dates as cyan and past due dates as red:
 <!-- snippet: resources/sample_vaults/Tasks-Demo/.obsidian/snippets/tasks-plugin-color-due-today-and-overdue.css -->
 ```css
 /* A special color for the 'due' component if it's for today */
-.task-list-item[data-task-status-type="TODO"] .task-due[data-task-due="today"] span,
-.task-list-item[data-task-status-type="IN_PROGRESS"] .task-due[data-task-due="today"] span {
+.task-list-item[data-task-status-stage="TODO"] .task-due[data-task-due="today"] span,
+.task-list-item[data-task-status-stage="IN_PROGRESS"] .task-due[data-task-due="today"] span {
     background: var(--color-cyan);
     border-radius: 10px;
     padding: 2px 8px;
 }
 
 /* A special color for overdue due dates */
-.task-list-item[data-task-status-type="TODO"] .task-due[data-task-due^="past-"] span,
-.task-list-item[data-task-status-type="IN_PROGRESS"] .task-due[data-task-due^="past-"] span {
+.task-list-item[data-task-status-stage="TODO"] .task-due[data-task-due^="past-"] span,
+.task-list-item[data-task-status-stage="IN_PROGRESS"] .task-due[data-task-due^="past-"] span {
     background: var(--color-pink);
     border-radius: 10px;
     padding: 2px 8px;
@@ -436,7 +436,7 @@ For example:
 
 ![Example of tasks-plugin-color-due-today-and-overdue.css snippet](../../images/tasks-plugin-color-due-today-and-overdue-snippet.png)
 
-Note that we only include the status type in the selector, to avoid highlighting dates in tasks with DONE, CANCELLED and NON_TASK status types.
+Note that we only include the status stage in the selector, to avoid highlighting dates in tasks with DONE, CANCELLED and NON_TASK status stages.
 
 ### Highlight for a Specific Tag
 
@@ -630,16 +630,16 @@ span.task-priority {
 }
 
 /* A special color for the 'due' component if it's for today, and still needs work on */
-.task-list-item[data-task-status-type="TODO"] .task-due[data-task-due="today"] span,
-.task-list-item[data-task-status-type="IN_PROGRESS"] .task-due[data-task-due="today"] span {
+.task-list-item[data-task-status-stage="TODO"] .task-due[data-task-due="today"] span,
+.task-list-item[data-task-status-stage="IN_PROGRESS"] .task-due[data-task-due="today"] span {
     background: var(--color-cyan);
     border-radius: 10px;
     padding: 2px 8px;
 }
 
 /* A special color for overdue due dates, for tasks that still need work on */
-.task-list-item[data-task-status-type="TODO"] .task-due[data-task-due^="past-"] span,
-.task-list-item[data-task-status-type="IN_PROGRESS"] .task-due[data-task-due^="past-"] span {
+.task-list-item[data-task-status-stage="TODO"] .task-due[data-task-due^="past-"] span,
+.task-list-item[data-task-status-stage="IN_PROGRESS"] .task-due[data-task-due^="past-"] span {
     background: var(--color-pink);
     border-radius: 10px;
     padding: 2px 8px;

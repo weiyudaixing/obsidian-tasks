@@ -23,7 +23,7 @@ export class GroupDisplayHeading {
 
     /**
      * The property, or field name, in the 'group by' line that generated this heading.
-     * For example, 'starts', 'status.type', or 'priority'.
+     * For example, 'starts', 'status.stage', or 'priority'.
      */
     public readonly property: string;
 

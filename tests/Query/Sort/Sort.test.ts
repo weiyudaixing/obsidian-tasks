@@ -15,7 +15,7 @@ import { PathField } from '../../../src/Query/Filter/PathField';
 import { SearchInfo } from '../../../src/Query/SearchInfo';
 import { Sort } from '../../../src/Query/Sort/Sort';
 import { StatusRegistry } from '../../../src/Statuses/StatusRegistry';
-import { StatusConfiguration, StatusType } from '../../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../../src/Statuses/StatusConfiguration';
 import { fromLine, fromLines, toLines } from '../../TestingTools/TestHelpers';
 import { SampleTasks } from '../../TestingTools/SampleTasks';
 import { TaskBuilder } from '../../TestingTools/TaskBuilder';
@@ -146,7 +146,7 @@ describe('Sort', () => {
     });
 
     it('visualise default sort order', () => {
-        StatusRegistry.getInstance().add(new StatusConfiguration('^', 'Non-task', ' ', false, StatusType.NON_TASK));
+        StatusRegistry.getInstance().add(new StatusConfiguration('Task', '^', 'Non-task', ' ', false, StatusStage.NON_TASK));
 
         const extraTaskLines = `- [x] #task Done        🔺 📅 1970-01-02
 - [/] #task In progress 🔺 📅 1970-01-02
@@ -156,7 +156,7 @@ describe('Sort', () => {
             .concat(SampleTasks.withAllRepresentativeStartDates())
             .concat(SampleTasks.withAllRepresentativeScheduledDates())
             .concat(SampleTasks.withAllPriorities())
-            .concat(SampleTasks.withAllStatusTypes())
+            .concat(SampleTasks.withAllStatusStages())
             .concat(SampleTasks.withAllRootsPathsHeadings())
             .concat(extraTasks);
         verifySortedTasks(tasks);

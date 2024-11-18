@@ -6,7 +6,7 @@ import { Query } from '../../src/Query/Query';
 import { TasksFile } from '../../src/Scripting/TasksFile';
 import { Status } from '../../src/Statuses/Status';
 import { Task } from '../../src/Task/Task';
-import { OnCompletion } from '../../src/Task/OnCompletion';
+import { OnHook } from '../../src/Task/OnHook';
 import { TaskLocation } from '../../src/Task/TaskLocation';
 import { fieldCreators } from '../../src/Query/FilterParser';
 import type { Field } from '../../src/Query/Filter/Field';
@@ -202,7 +202,7 @@ describe('Query parsing', () => {
         'starts on 2021-12-27',
         'starts this week',
         'status.name includes cancelled',
-        'status.type is IN_PROGRESS',
+        'status.stage is IN_PROGRESS',
         'tag does not include #sometag',
         'tag does not include sometag',
         'tag includes #sometag',
@@ -323,8 +323,8 @@ describe('Query parsing', () => {
             'sort by status reverse',
             'sort by status.name',
             'sort by status.name reverse',
-            'sort by status.type',
-            'sort by status.type reverse',
+            'sort by status.stage',
+            'sort by status.stage reverse',
             'sort by tag',
             'sort by tag 5',
             'sort by tag reverse',
@@ -407,8 +407,8 @@ describe('Query parsing', () => {
             'group by status reverse',
             'group by status.name',
             'group by status.name reverse',
-            'group by status.type',
-            'group by status.type reverse',
+            'group by status.stage',
+            'group by status.stage reverse',
             'group by tags',
             'group by tags reverse',
             'group by urgency',
@@ -459,7 +459,7 @@ describe('Query parsing', () => {
             'hide due date',
             'hide edit button',
             'hide id',
-            'hide on completion',
+            'hide on hook',
             'hide priority',
             'hide recurrence rule',
             'hide scheduled date',
@@ -483,7 +483,7 @@ describe('Query parsing', () => {
             'show due date',
             'show edit button',
             'show id',
-            'show on completion',
+            'show on hook',
             'show priority',
             'show recurrence rule',
             'show scheduled date',
@@ -542,8 +542,8 @@ describe('Query parsing', () => {
         expect(new Query('group by status.name').grouping[0].property).toEqual('status.name');
         expect(new Query('GROUP BY STATUS.NAME').grouping[0].property).toEqual('status.name');
 
-        expect(new Query('group by status.type').grouping[0].property).toEqual('status.type');
-        expect(new Query('GROUP BY STATUS.TYPE').grouping[0].property).toEqual('status.type');
+        expect(new Query('group by status.stage').grouping[0].property).toEqual('status.stage');
+        expect(new Query('GROUP BY STATUS.stage').grouping[0].property).toEqual('status.stage');
     });
 
     it('should parse "short mode" and "full mode" correctly', () => {
@@ -717,9 +717,9 @@ Problem statement:
             expect(query).not.toBeValid();
             expect(query.error).toEqual(
                 'The query looks like it contains a placeholder, with "{{" and "}}"\n' +
-                    'but no file path has been supplied, so cannot expand placeholder values.\n' +
-                    'The query is:\n' +
-                    'path includes {{query.file.path}}',
+                'but no file path has been supplied, so cannot expand placeholder values.\n' +
+                'The query is:\n' +
+                'path includes {{query.file.path}}',
             );
             expect(query.filters.length).toEqual(0);
         });
@@ -736,12 +736,12 @@ Problem statement:
             expect(query).not.toBeValid();
             expect(query.error).toEqual(
                 'There was an error expanding one or more placeholders.\n' +
-                    '\n' +
-                    'The error message was:\n' +
-                    '    Unknown property: query.file.noSuchProperty\n' +
-                    '\n' +
-                    'The problem is in:\n' +
-                    '    path includes {{query.file.noSuchProperty}}',
+                '\n' +
+                'The error message was:\n' +
+                '    Unknown property: query.file.noSuchProperty\n' +
+                '\n' +
+                'The problem is in:\n' +
+                '    path includes {{query.file.noSuchProperty}}',
             );
             expect(query.filters.length).toEqual(0);
         });
@@ -766,7 +766,7 @@ describe('Query', () => {
                     doneDate: null,
                     cancelledDate: null,
                     recurrence: null,
-                    onCompletion: OnCompletion.Ignore,
+                    onHook: OnHook.Ignore,
                     dependsOn: [],
                     id: '',
                     blockLink: '',
@@ -788,7 +788,7 @@ describe('Query', () => {
                     doneDate: null,
                     cancelledDate: null,
                     recurrence: null,
-                    onCompletion: OnCompletion.Ignore,
+                    onHook: OnHook.Ignore,
                     dependsOn: [],
                     id: '',
                     blockLink: '',
@@ -1301,14 +1301,14 @@ describe('Query', () => {
     });
 
     describe('show and hide', () => {
-        it('should show "on completion" by default', () => {
+        it('should show "on hook" by default', () => {
             const query = new Query('');
-            expect(query.taskLayoutOptions.isShown(TaskLayoutComponent.OnCompletion)).toEqual(true);
+            expect(query.taskLayoutOptions.isShown(TaskLayoutComponent.OnHook)).toEqual(true);
         });
 
-        it('should allow to hide "on completion"', () => {
-            const query = new Query('hide on completion');
-            expect(query.taskLayoutOptions.isShown(TaskLayoutComponent.OnCompletion)).toEqual(false);
+        it('should allow to hide "on hook"', () => {
+            const query = new Query('hide on hook');
+            expect(query.taskLayoutOptions.isShown(TaskLayoutComponent.OnHook)).toEqual(false);
         });
 
         it('should hide "tree" by default', () => {

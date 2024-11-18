@@ -9,7 +9,7 @@ import { PathField } from '../../../src/Query/Filter/PathField';
 import { TagsField } from '../../../src/Query/Filter/TagsField';
 import { FolderField } from '../../../src/Query/Filter/FolderField';
 import { TaskGroups } from '../../../src/Query/Group/TaskGroups';
-import { StatusTypeField } from '../../../src/Query/Filter/StatusTypeField';
+import { StatusStageField } from '../../../src/Query/Filter/StatusStageField';
 import { HappensDateField } from '../../../src/Query/Filter/HappensDateField';
 import { DueDateField } from '../../../src/Query/Filter/DueDateField';
 import { SearchInfo } from '../../../src/Query/SearchInfo';
@@ -376,7 +376,7 @@ describe('Grouping tasks', () => {
         const inputs = [a, b, c];
 
         const grouping = [
-            new StatusTypeField().createNormalGrouper(), // Two group levels
+            new StatusStageField().createNormalGrouper(), // Two group levels
             new HappensDateField().createNormalGrouper(),
         ];
         const groups = makeTasksGroups(grouping, inputs);
@@ -384,11 +384,11 @@ describe('Grouping tasks', () => {
         // the last group instead of before the first one.
         expect(groups.toString()).toMatchInlineSnapshot(`
             "Groupers (if any):
-            - status.type
+            - status.stage
             - happens
 
             Group names: [%%2%%TODO,2022-09-19 Monday]
-            #### [status.type] %%2%%TODO
+            #### [status.stage] %%2%%TODO
             ##### [happens] 2022-09-19 Monday
             - [ ] Task a - early date 📅 2022-09-19
 

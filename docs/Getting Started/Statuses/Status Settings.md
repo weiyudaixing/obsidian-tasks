@@ -17,7 +17,7 @@ There are two sections:
 
 1. **Core Statuses**
     - These are statuses that are built in to Tasks, and cannot be deleted.
-    - They are the two task types that are built in to Obsidian and Tasks natively: `[ ]` and `[x]`.
+    - They are the two tasks status that are built in to Obsidian and Tasks natively: `[ ]` and `[x]`.
     - Their status symbols cannot be changed.
     - All their other properties can be edited.
 2. **Custom Statuses**
@@ -31,7 +31,7 @@ We also see that each status consists of:
 - **Status Symbol** (for example, `x` and  `-`)
 - **Status Name** (for example, 'In Progress')
 - **Next Status Symbol** (for example, `x` and `space`)
-- **Status Type** (one of `TODO`, `DONE`, `IN_PROGRESS` or `CANCELLED`)
+- **Status Stage** (one of `TODO`, `DONE`, `IN_PROGRESS` or `CANCELLED`)
 
 ## Add New Task Status
 
@@ -73,7 +73,7 @@ Tasks knows about a growing list of custom checkboxes in Themes and CSS Snippets
 
 You can find a full list, with screenshots and complete details of the supported checkboxes, in [[About Status Collections]].
 
-### Add All Unknown Status Types
+### Add All Unknown Status Stages
 
 This searches all the tasks in your vault for any with status symbols that are not already in Tasks settings.
 It then creates a new custom status for each unknown status symbol.
@@ -86,7 +86,7 @@ For example, in a vault that has already used a few custom statuses, we might se
 ![Example result from adding all Unknown statuses](../../images/settings-custom-statuses-add-unknown-statuses.png)<br>
 *Example result from adding all Unknown statuses*
 
-## Reset Custom Status Types to Defaults
+## Reset Custom Status Stages to Defaults
 
 This resets the entire Custom Statuses section back to its default list.
 

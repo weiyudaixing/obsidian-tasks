@@ -13,18 +13,18 @@ describe('StatusSettingsReport', () => {
 
     it('should include problems in table', () => {
         const customStatusesData: StatusCollection = [
-            ['/', 'In Progress', 'x', 'IN_PROGRESS'],
-            ['/', 'In Progress DUPLICATE', 'x', 'IN_PROGRESS'],
-            ['X', 'X - conventionally DONE, but this is CANCELLED', ' ', 'CANCELLED'],
-            ['', '', '', 'TODO'], // A new, unedited status
-            ['p', 'Unknown next symbol', 'q', 'TODO'],
-            ['c', 'Followed by d', 'd', 'TODO'],
-            ['n', 'Non-task', 'n', 'NON_TASK'],
-            ['1', 'DONE followed by TODO', ' ', 'DONE'],
-            ['2', 'DONE followed by IN_PROGRESS', '/', 'DONE'],
-            ['3', 'DONE followed by DONE', 'x', 'DONE'],
-            ['4', 'DONE followed by CANCELLED', 'X', 'DONE'],
-            ['5', 'DONE followed by NON_TASK', 'n', 'DONE'],
+            ['Task', '/', 'In Progress', 'x', 'IN_PROGRESS'],
+            ['Task', '/', 'In Progress DUPLICATE', 'x', 'IN_PROGRESS'],
+            ['Task', 'X', 'X - conventionally DONE, but this is CANCELLED', ' ', 'CANCELLED'],
+            ['Task', '', '', '', 'TODO'], // A new, unedited status
+            ['Task', 'p', 'Unknown next symbol', 'q', 'TODO'],
+            ['Task', 'c', 'Followed by d', 'd', 'TODO'],
+            ['Task', 'n', 'Non-task', 'n', 'NON_TASK'],
+            ['Task', '1', 'DONE followed by TODO', ' ', 'DONE'],
+            ['Task', '2', 'DONE followed by IN_PROGRESS', '/', 'DONE'],
+            ['Task', '3', 'DONE followed by DONE', 'x', 'DONE'],
+            ['Task', '4', 'DONE followed by CANCELLED', 'X', 'DONE'],
+            ['Task', '5', 'DONE followed by NON_TASK', 'n', 'DONE'],
         ];
         const { statusSettings } = createStatuses(coreStatusesData, customStatusesData);
 

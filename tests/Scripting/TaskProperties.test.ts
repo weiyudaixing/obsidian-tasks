@@ -63,8 +63,8 @@ describe('task', () => {
         verifyFieldDataForReferenceDocs([
             'task.isDone',
             'task.status.name',
-            'task.status.type',
-            'task.status.typeGroupText',
+            'task.status.stage',
+            'task.status.stageGroupText',
             'task.status.symbol',
             'task.status.nextSymbol',
         ]);
@@ -124,7 +124,7 @@ describe('task', () => {
             'task.urgency',
             'task.isRecurring',
             'task.recurrenceRule',
-            'task.onCompletion',
+            'task.onHook',
             'task.tags',
             // 'task.indentation', // Cannot just use length to determine if sub-task, as it many be '> ' due to being in a sub-task
             // 'task.listMarker', // Not a priority to release

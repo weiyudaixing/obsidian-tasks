@@ -1,6 +1,6 @@
 import type { Task } from '../../Task/Task';
 import type { GrouperFunction } from '../Group/Grouper';
-import { StatusType } from '../../Statuses/StatusConfiguration';
+import { StatusStage } from '../../Statuses/StatusConfiguration';
 import type { Comparator } from '../Sort/Sorter';
 import { Explanation } from '../Explain/Explanation';
 import { Field } from './Field';
@@ -9,9 +9,9 @@ import type { FilterFunction } from './Filter';
 import { FilterOrErrorMessage } from './FilterOrErrorMessage';
 
 /**
- * A ${@link Field} implementation for searching status.type
+ * A ${@link Field} implementation for searching status.stage
  */
-export class StatusTypeField extends Field {
+export class StatusStageField extends Field {
     // -----------------------------------------------------------------------------------------------------------------
     // Filtering
     // -----------------------------------------------------------------------------------------------------------------
@@ -30,10 +30,10 @@ export class StatusTypeField extends Field {
         }
 
         const filterOperator = match[1].toLowerCase();
-        const statusTypeAsString = match[2];
+        const statusStageAsString = match[2];
 
-        const statusTypeElement = StatusType[statusTypeAsString.toUpperCase() as keyof typeof StatusType];
-        if (!statusTypeElement) {
+        const statusStageElement = StatusStage[statusStageAsString.toUpperCase() as keyof typeof StatusStage];
+        if (!statusStageElement) {
             return this.helpMessage(line);
         }
 
@@ -42,12 +42,12 @@ export class StatusTypeField extends Field {
         switch (filterOperator) {
             case 'is':
                 filterFunction = (task: Task) => {
-                    return task.status.type === statusTypeElement;
+                    return task.status.stage === statusStageElement;
                 };
                 break;
             case 'is not':
                 filterFunction = (task: Task) => {
-                    return task.status.type !== statusTypeElement;
+                    return task.status.stage !== statusStageElement;
                 };
                 break;
             default:
@@ -62,13 +62,13 @@ export class StatusTypeField extends Field {
     }
 
     private helpMessage(line: string): FilterOrErrorMessage {
-        const allowedTypes = Object.values(StatusType)
-            .filter((t) => t !== StatusType.EMPTY)
+        const allowedStages = Object.values(StatusStage)
+            .filter((t) => t !== StatusStage.EMPTY)
             .join(' ');
 
         const message = `Invalid ${this.fieldNameSingular()} instruction: '${line}'.
     Allowed options: 'is' and 'is not' (without quotes).
-    Allowed values:  ${allowedTypes}
+    Allowed values:  ${allowedStages}
                      Note: values are case-insensitive,
                            so 'in_progress' works too, for example.
     Example:         ${this.fieldNameSingular()} is not NON_TASK`;
@@ -76,11 +76,11 @@ export class StatusTypeField extends Field {
     }
 
     public fieldName(): string {
-        return 'status.type';
+        return 'status.stage';
     }
 
     value(task: Task): string {
-        return task.status.type;
+        return task.status.stage;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -93,8 +93,8 @@ export class StatusTypeField extends Field {
 
     comparator(): Comparator {
         return (a: Task, b: Task) => {
-            const keyA = StatusTypeField.groupName(a);
-            const keyB = StatusTypeField.groupName(b);
+            const keyA = StatusStageField.groupName(a);
+            const keyB = StatusStageField.groupName(b);
             return keyA.localeCompare(keyB, undefined, { numeric: true });
         };
     }
@@ -109,11 +109,11 @@ export class StatusTypeField extends Field {
 
     public grouper(): GrouperFunction {
         return (task: Task) => {
-            return [StatusTypeField.groupName(task)];
+            return [StatusStageField.groupName(task)];
         };
     }
 
     private static groupName(task: Task) {
-        return task.status.typeGroupText;
+        return task.status.stageGroupText;
     }
 }

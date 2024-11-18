@@ -60,14 +60,14 @@ Here is some more detail.
   - is searchable with `status.name`, for example `status.name includes My custom in-progress status`.
 - **Next Status Symbol**
   - the status symbol to use when the task is toggled.
-- **Status Type**
+- **Status Stage**
   - one of `TODO`, `IN_PROGRESS`, `DONE`, `CANCELLED`, `NON_TASK`.
-  - Tasks needs to know the type of each status, so that it knows how to treat them when searching, and what to do when tasks with the status are toggled.
-  - types are searchable with `status.type`, for example `status.type is IN_PROGRESS`.
+  - Tasks needs to know the stage of each status, so that it knows how to treat them when searching, and what to do when tasks with the status are toggled.
+  - stages are searchable with `status.stage`, for example `status.stage is IN_PROGRESS`.
   - Also available:
-    - `sort by status.type`
-    - `group by status.type`
-  - For more information, see [[Status Types]]
+    - `sort by status.stage`
+    - `group by status.stage`
+  - For more information, see [[Status Stages]]
 
 ### Unknown Statuses
 
@@ -80,16 +80,16 @@ All such tasks are given a status called `Unknown`, with these properties:
 | Status Symbol      | The unrecognised character between the `[` and `]` in the task line |
 | Status Name        | **Unknown**                                                         |
 | Next Status Symbol | `x`                                                                 |
-| Status Type        | `TODO`                                                              |
+| Status Stage        | `TODO`                                                              |
 
 ### Done date, Recurrence and Statuses
 
-It is the Task Status Type changing **to** `DONE` that controls when:
+It is the Task Status Stage changing **to** `DONE` that controls when:
 
 - tasks **gain** their Done dates (if Done dates are enabled in settings),
 - new copies of recurring tasks are created.
 
-It is the Task Status Type changing **from** `DONE` that controls when:
+It is the Task Status Stage changing **from** `DONE` that controls when:
 
 - tasks **lose** their Done dates (if Done dates are enabled in settings).
 
@@ -177,16 +177,16 @@ We are tracking this in [issue #1486](https://github.com/obsidian-tasks-group/ob
 
 ### Related searches
 
-- `done` - matches tasks with status types `DONE`, `CANCELLED` and `NON_TASK`
-- `not done` - matches tasks with status types `TODO` and `IN_PROGRESS`
+- `done` - matches tasks with status stages `DONE`, `CANCELLED` and `NON_TASK`
+- `not done` - matches tasks with status stages `TODO` and `IN_PROGRESS`
 - **Status Name**
   - `status.name` text search
   - `sort by status.name`
   - `group by status.name`
-- **Status Type**
-  - `status.type` text search
-  - `sort by status.type`
-  - `group by status.type`
+- **Status Stage**
+  - `status.stage` text search
+  - `sort by status.stage`
+  - `group by status.stage`
 
 For details, see [[Filters#Filters for Task Statuses|Filters for Task Statuses]]
 

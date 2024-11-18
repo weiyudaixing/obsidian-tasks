@@ -1,11 +1,13 @@
 /**
- * Collection of status types supported by the plugin.
+ * Collection of status stages supported by the plugin.
  */
-export enum StatusType {
+export enum StatusStage {
     TODO = 'TODO',
-    DONE = 'DONE',
     IN_PROGRESS = 'IN_PROGRESS',
+    DONE = 'DONE',
+    ARCHIVED = 'ARCHIVED',
     CANCELLED = 'CANCELLED',
+    HOOK = 'HOOK',
     NON_TASK = 'NON_TASK',
     EMPTY = 'EMPTY',
 }
@@ -18,6 +20,14 @@ export enum StatusType {
  * @class StatusConfiguration
  */
 export class StatusConfiguration {
+    /**
+     * The class of the task object, e.g. task, question.
+     *
+     * @type {string}
+     * @memberof Status
+     */
+    public readonly objectClass: string;
+
     /**
      * The character used between the two square brackets in the markdown task.
      *
@@ -51,32 +61,34 @@ export class StatusConfiguration {
     public readonly availableAsCommand: boolean;
 
     /**
-     * Returns the status type. See {@link StatusType} for details.
+     * Returns the status stage. See {@link StatusStage} for details.
      */
-    public readonly type: StatusType;
+    public readonly stage: StatusStage;
 
     /**
      * Creates an instance of Status. The registry will be added later in the case
      * of the default statuses.
-     *
+     * @param {string} objectClass
      * @param {string} symbol
      * @param {string} name
      * @param {Status} nextStatusSymbol
      * @param {boolean} availableAsCommand
-     * @param {StatusType} type
+     * @param {StatusStage} stage
      * @memberof Status
      */
     constructor(
+        objectClass: string,
         symbol: string,
         name: string,
         nextStatusSymbol: string,
         availableAsCommand: boolean,
-        type: StatusType = StatusType.TODO, // TODO Remove default value
+        stage: StatusStage = StatusStage.TODO, // TODO Remove default value
     ) {
+        this.objectClass = objectClass;
         this.symbol = symbol;
         this.name = name;
         this.nextStatusSymbol = nextStatusSymbol;
         this.availableAsCommand = availableAsCommand;
-        this.type = type;
+        this.stage = stage;
     }
 }

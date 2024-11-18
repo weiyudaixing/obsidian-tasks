@@ -1,5 +1,5 @@
 import type { StatusConfiguration } from './StatusConfiguration';
-import { StatusType } from './StatusConfiguration';
+import { StatusStage } from './StatusConfiguration';
 import type { StatusCollectionEntry } from './StatusCollection';
 import { Status } from './Status';
 import { StatusRegistry } from './StatusRegistry';
@@ -12,6 +12,7 @@ export class StatusValidator {
         const errors: string[] = [];
 
         // Messages are added in the order fields are shown when editing statuses.
+        errors.push(...this.validateObjectClass(statusConfiguration));
         errors.push(...this.validateSymbol(statusConfiguration));
         errors.push(...this.validateName(statusConfiguration));
         errors.push(...this.validateNextSymbol(statusConfiguration));
@@ -28,20 +29,20 @@ export class StatusValidator {
      * @param entry
      */
     public validateStatusCollectionEntry(entry: StatusCollectionEntry) {
-        const [symbol, _name, nextStatusSymbol, typeAsString] = entry;
+        const [_objectClass, symbol, _name, nextStatusSymbol, stageAsString] = entry;
 
         const errors: string[] = [];
 
         // Checks that can only be done on the raw data.
-        // Status.createFromImportedValue() falls back to StatusType.TODO if the
-        // type string is not recognised, so we have to test that first.
-        errors.push(...this.validateType(typeAsString));
+        // Status.createFromImportedValue() falls back to StatusStage.TODO if the
+        // stage string is not recognised, so we have to test that first.
+        errors.push(...this.validateStage(stageAsString));
 
         // For users, it is valid to have a status that toggles to itself.
         // For imported data for themes, it seems worth preventing that situation,
         // to guard against human error when setting up the status collections.
         // But make an exception for any non-tasks in imported data.
-        if (symbol === nextStatusSymbol && typeAsString !== 'NON_TASK') {
+        if (symbol === nextStatusSymbol && stageAsString !== 'NON_TASK'&&stageAsString !== 'ARCHIVED') {
             errors.push(`Status symbol '${symbol}' toggles to itself`);
         }
 
@@ -52,12 +53,18 @@ export class StatusValidator {
         }
 
         const configuration = Status.createFromImportedValue(entry).configuration;
-        errors.push(...this.validateSymbolTypeConventions(configuration));
+        errors.push(...this.validateSymbolStageConventions(configuration));
         errors.push(...this.validate(configuration));
 
         return errors;
     }
-
+    public validateObjectClass(statusConfiguration: StatusConfiguration) {
+        const errors: string[] = [];
+        if (statusConfiguration.objectClass.length === 0) {
+            errors.push('Task Object Class cannot be empty.');
+        }
+        return errors;
+    }
     public validateSymbol(statusConfiguration: StatusConfiguration): string[] {
         return StatusValidator.validateOneSymbol(statusConfiguration.symbol, 'Task Status Symbol');
     }
@@ -74,34 +81,34 @@ export class StatusValidator {
         return errors;
     }
 
-    public validateType(symbolName: string): string[] {
-        const statusTypeElement = StatusType[symbolName as keyof typeof StatusType];
+    public validateStage(symbolName: string): string[] {
+        const statusStageElement = StatusStage[symbolName as keyof typeof StatusStage];
         const errors: string[] = [];
-        if (!statusTypeElement) {
-            errors.push(`Status Type "${symbolName}" is not a valid type`);
+        if (!statusStageElement) {
+            errors.push(`Status Stage "${symbolName}" is not a valid stage`);
         }
-        if (statusTypeElement == StatusType.EMPTY) {
-            errors.push('Status Type "EMPTY" is not permitted in user data');
+        if (statusStageElement == StatusStage.EMPTY) {
+            errors.push('Status Stage "EMPTY" is not permitted in user data');
         }
         return errors;
     }
 
-    public validateSymbolTypeConventions(configuration: StatusConfiguration): string[] {
+    public validateSymbolStageConventions(configuration: StatusConfiguration): string[] {
         const errors: string[] = [];
 
         const symbol = configuration.symbol;
         const registry = new StatusRegistry();
         const symbolToSearchFor = symbol === 'X' ? 'x' : symbol;
         const defaultStatusFromRegistry = registry.bySymbol(symbolToSearchFor);
-        if (defaultStatusFromRegistry.type !== StatusType.EMPTY) {
+        if (defaultStatusFromRegistry.stage !== StatusStage.EMPTY) {
             if (configuration.nextStatusSymbol !== defaultStatusFromRegistry.nextStatusSymbol) {
                 errors.push(
                     `Next Status Symbol for symbol '${symbol}': '${configuration.nextStatusSymbol}' is inconsistent with convention '${defaultStatusFromRegistry.nextStatusSymbol}'`,
                 );
             }
-            if (configuration.type !== defaultStatusFromRegistry.type) {
+            if (configuration.stage !== defaultStatusFromRegistry.stage) {
                 errors.push(
-                    `Status Type for symbol '${symbol}': '${configuration.type}' is inconsistent with convention '${defaultStatusFromRegistry.type}'`,
+                    `Status Stage for symbol '${symbol}': '${configuration.stage}' is inconsistent with convention '${defaultStatusFromRegistry.stage}'`,
                 );
             }
         }

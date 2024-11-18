@@ -1,5 +1,5 @@
 import type { Task } from '../../Task/Task';
-import { StatusTypeField } from '../Filter/StatusTypeField';
+import { StatusStageField } from '../Filter/StatusStageField';
 import { DueDateField } from '../Filter/DueDateField';
 import { PriorityField } from '../Filter/PriorityField';
 import { PathField } from '../Filter/PathField';
@@ -24,7 +24,7 @@ export class Sort {
 
     public static defaultSorters() {
         return [
-            new StatusTypeField().createNormalSorter(),
+            new StatusStageField().createNormalSorter(),
             new UrgencyField().createNormalSorter(),
             new DueDateField().createNormalSorter(),
             new PriorityField().createNormalSorter(),

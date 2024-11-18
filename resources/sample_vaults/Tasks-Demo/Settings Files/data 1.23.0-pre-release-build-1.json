@@ -9,7 +9,7 @@
   "useFilenameAsScheduledDate": true,
   "filenameAsDateFolders": [],
   "statusSettings": {
-    "customStatusTypes": [
+    "customStatusStages": [
       {
         "indicator": "P",
         "name": "Pro",
@@ -29,7 +29,7 @@
   },
   "generalSettings": {},
   "headingOpened": {
-    "Core Status Types": true,
-    "Custom Status Types": true
+    "Core Status Stages": true,
+    "Custom Status Stages": true
   }
 }

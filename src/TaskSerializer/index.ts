@@ -21,7 +21,7 @@ export type TaskDetails = Writeable<
         | 'doneDate'
         | 'cancelledDate'
         | 'recurrence'
-        | 'onCompletion'
+        | 'onHook'
         | 'dependsOn'
         | 'id'
         | 'tags'

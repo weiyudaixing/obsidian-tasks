@@ -2,12 +2,12 @@
 import type { Moment } from 'moment';
 import { TasksFile } from '../../src/Scripting/TasksFile';
 import { Status } from '../../src/Statuses/Status';
-import { OnCompletion } from '../../src/Task/OnCompletion';
+import { OnHook } from '../../src/Task/OnHook';
 import { Occurrence } from '../../src/Task/Occurrence';
 import { Task } from '../../src/Task/Task';
 import { Recurrence } from '../../src/Task/Recurrence';
 import { DateParser } from '../../src/DateTime/DateParser';
-import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../src/Statuses/StatusConfiguration';
 import { TaskLocation } from '../../src/Task/TaskLocation';
 import { Priority } from '../../src/Task/Priority';
 import { setCurrentCacheFile } from '../__mocks__/obsidian';
@@ -48,7 +48,7 @@ export class TaskBuilder {
     private _cancelledDate: Moment | null = null;
 
     private _recurrence: Recurrence | null = null;
-    private _onCompletion: OnCompletion = OnCompletion.Ignore;
+    private _onHook: OnHook = OnHook.Ignore;
     private _blockLink: string = '';
 
     private _scheduledDateIsInferred: boolean = false;
@@ -98,7 +98,7 @@ export class TaskBuilder {
             doneDate: this._doneDate,
             cancelledDate: this._cancelledDate,
             recurrence: this._recurrence,
-            onCompletion: this._onCompletion,
+            onHook: this._onHook,
             dependsOn: this._dependsOn,
             id: this._id,
             blockLink: this._blockLink,
@@ -129,7 +129,7 @@ export class TaskBuilder {
             .dueDate('2023-07-04')
             .doneDate('2023-07-05')
             .cancelledDate('2023-07-06')
-            .onCompletion(OnCompletion.Delete)
+            .onHook(OnHook.Delete)
             .dependsOn(['123456', 'abc123'])
             .id('abcdef')
             .blockLink(' ^dcf64c')
@@ -171,13 +171,14 @@ export class TaskBuilder {
     }
 
     public statusValues(
+        objectClass: string,
         symbol: string,
         name: string,
         nextStatusSymbol: string,
         availableAsCommand: boolean,
-        type: StatusType,
+        stage: StatusStage,
     ): this {
-        const statusConfiguration = new StatusConfiguration(symbol, name, nextStatusSymbol, availableAsCommand, type);
+        const statusConfiguration = new StatusConfiguration(objectClass,symbol, name, nextStatusSymbol, availableAsCommand, stage);
         return this.status(new Status(statusConfiguration));
     }
 
@@ -292,8 +293,8 @@ export class TaskBuilder {
         return this;
     }
 
-    public onCompletion(onCompletion: OnCompletion): this {
-        this._onCompletion = onCompletion;
+    public onHook(onHook: OnHook): this {
+        this._onHook = onHook;
         return this;
     }
 

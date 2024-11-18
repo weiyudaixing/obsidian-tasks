@@ -73,8 +73,8 @@ export class StatusSettings {
     }
 
     /**
-     * This is a workaround for the fact that statusSettings.customStatusTypes.indexOf(statusConfiguration)
-     * stopped finding identical statuses since the addition of StatusConfiguration.type.
+     * This is a workaround for the fact that statusSettings.customStatusStages.indexOf(statusConfiguration)
+     * stopped finding identical statuses since the addition of StatusConfiguration.stage.
      * @param statusConfiguration
      * @param statuses
      * @private
@@ -178,8 +178,8 @@ export class StatusSettings {
      */
     public static applyToStatusRegistry(statusSettings: StatusSettings, statusRegistry: StatusRegistry) {
         statusRegistry.clearStatuses();
-        StatusSettings.allStatuses(statusSettings).forEach((statusType) => {
-            statusRegistry.add(statusType);
+        StatusSettings.allStatuses(statusSettings).forEach((statusStage) => {
+            statusRegistry.add(statusStage);
         });
     }
 }

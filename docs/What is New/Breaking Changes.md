@@ -34,7 +34,7 @@ To help users updating across multiple Tasks releases, we collect here links to 
 These are all bug-fixes, improving the default behaviour, and recorded here for transparency.
 
 - **Sorting**
-  - The [[Sorting#Default sort order|default sort order]] now sorts first by status type, to greatly improve search results that include completed tasks.
+  - The [[Sorting#Default sort order|default sort order]] now sorts first by status stage, to greatly improve search results that include completed tasks.
 - **Invalid dates**
   - [[Filters#Happens|happens]] date now ignores any invalid dates.
   - `sort by [date]` puts invalid dates before valid dates, as action is required. See [[Sorting#How dates are sorted]].

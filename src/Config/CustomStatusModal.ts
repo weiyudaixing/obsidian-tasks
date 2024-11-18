@@ -1,28 +1,30 @@
 import { Modal, Notice, Setting, TextComponent } from 'obsidian';
 import type { Plugin } from 'obsidian';
-import { StatusConfiguration, StatusType } from '../Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../Statuses/StatusConfiguration';
 import { StatusValidator } from '../Statuses/StatusValidator';
 import { Status } from '../Statuses/Status';
 
 const validator = new StatusValidator();
 
 export class CustomStatusModal extends Modal {
+    statusObjectClass: string;
     statusSymbol: string;
     statusName: string;
     statusNextSymbol: string;
     statusAvailableAsCommand: boolean;
-    type: StatusType;
+    stage: StatusStage;
 
     saved: boolean = false;
     error: boolean = false;
     private isCoreStatus: boolean;
-    constructor(public plugin: Plugin, statusType: StatusConfiguration, isCoreStatus: boolean) {
+    constructor(public plugin: Plugin, statusConfig: StatusConfiguration, isCoreStatus: boolean) {
         super(plugin.app);
-        this.statusSymbol = statusType.symbol;
-        this.statusName = statusType.name;
-        this.statusNextSymbol = statusType.nextStatusSymbol;
-        this.statusAvailableAsCommand = statusType.availableAsCommand;
-        this.type = statusType.type;
+        this.statusObjectClass = statusConfig.objectClass;
+        this.statusSymbol = statusConfig.symbol;
+        this.statusName = statusConfig.name;
+        this.statusNextSymbol = statusConfig.nextStatusSymbol;
+        this.statusAvailableAsCommand = statusConfig.availableAsCommand;
+        this.stage = statusConfig.stage;
         this.isCoreStatus = isCoreStatus;
     }
 
@@ -31,11 +33,12 @@ export class CustomStatusModal extends Modal {
      */
     public statusConfiguration() {
         return new StatusConfiguration(
+            this.statusObjectClass,
             this.statusSymbol,
             this.statusName,
             this.statusNextSymbol,
             this.statusAvailableAsCommand,
-            this.type,
+            this.stage,
         );
     }
 
@@ -46,6 +49,20 @@ export class CustomStatusModal extends Modal {
 
         const settingDiv = contentEl.createDiv();
         //const title = this.title ?? '...';
+        let statusObjectClassText: TextComponent;
+        new Setting(settingDiv)
+            .setName('Task Status Name')
+            .setDesc('This is the friendly name of the task status.')
+            .addText((text) => {
+                statusObjectClassText = text;
+                text.setValue(this.statusObjectClass).onChange((v) => {
+                    this.statusObjectClass = v;
+                    CustomStatusModal.setValid(text, validator.validateObjectClass(this.statusConfiguration()));
+                });
+            })
+            .then((_setting) => {
+                CustomStatusModal.setValid(statusObjectClassText, validator.validateObjectClass(this.statusConfiguration()));
+            });
 
         let statusSymbolText: TextComponent;
         new Setting(settingDiv)
@@ -100,21 +117,22 @@ export class CustomStatusModal extends Modal {
             });
 
         new Setting(settingDiv)
-            .setName('Task Status Type')
+            .setName('Task Status Stage')
             .setDesc('Control how the status behaves for searching and toggling.')
             .addDropdown((dropdown) => {
-                const types = [
-                    StatusType.TODO,
-                    StatusType.IN_PROGRESS,
-                    StatusType.DONE,
-                    StatusType.CANCELLED,
-                    StatusType.NON_TASK,
+                const stages = [
+                    StatusStage.TODO,
+                    StatusStage.IN_PROGRESS,
+                    StatusStage.DONE,
+                    StatusStage.ARCHIVED,
+                    StatusStage.CANCELLED,
+                    StatusStage.NON_TASK,
                 ];
-                types.forEach((s) => {
+                stages.forEach((s) => {
                     dropdown.addOption(s, s);
                 });
-                dropdown.setValue(this.type).onChange((v) => {
-                    this.type = Status.getTypeFromStatusTypeString(v);
+                dropdown.setValue(this.stage).onChange((v) => {
+                    this.stage = Status.getStageFromStatusStageString(v);
                 });
             });
 

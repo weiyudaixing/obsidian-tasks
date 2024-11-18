@@ -11,7 +11,7 @@ export enum TaskLayoutComponent {
     DependsOn = 'dependsOn',
     Priority = 'priority',
     RecurrenceRule = 'recurrenceRule',
-    OnCompletion = 'onCompletion',
+    OnHook = 'onHook',
     CreatedDate = 'createdDate',
     StartDate = 'startDate',
     ScheduledDate = 'scheduledDate',

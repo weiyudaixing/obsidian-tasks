@@ -8,11 +8,11 @@ publish: true
 
 This section provides more detail to flesh out the introductory material in [[Statuses]].
 
-## Types of Status
+## Stages of Status
 
 - [[Core Statuses]]
 - [[Custom Statuses]]
-- [[Status Types]]
+- [[Status Stages]]
 
 ## Setting up your Statuses
 

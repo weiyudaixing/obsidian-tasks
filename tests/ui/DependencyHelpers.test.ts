@@ -1,7 +1,7 @@
 import { createTasksFromMarkdown } from '../TestingTools/TestHelpers';
 import { searchForCandidateTasksForDependency } from '../../src/ui/DependencyHelpers';
 import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
-import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../src/Statuses/StatusConfiguration';
 import type { Task } from '../../src/Task/Task';
 
 function offersTheseCandidatesForTasks(
@@ -35,7 +35,7 @@ function offersTheseCandidates(markdown: string, descriptionsOfCandidateTasks: s
 describe('searching for tasks', () => {
     beforeEach(() => {
         StatusRegistry.getInstance().resetToDefaultStatuses();
-        const nonTaskStatus = new StatusConfiguration('Q', 'Question', 'A', true, StatusType.NON_TASK);
+        const nonTaskStatus = new StatusConfiguration('Task','Q', 'Question', 'A', true, StatusStage.NON_TASK);
         StatusRegistry.getInstance().add(nonTaskStatus);
     });
 

@@ -132,7 +132,7 @@ async function renderTaskModalAndChangeStatus(line: string, newStatusSymbol: str
     const { waitForClose, onSubmit } = constructSerialisingOnSubmit(task);
     const { result, container } = renderAndCheckModal(task, onSubmit);
 
-    const statusSelector = getAndCheckRenderedElement<HTMLSelectElement>(container, 'status-type');
+    const statusSelector = getAndCheckRenderedElement<HTMLSelectElement>(container, 'status-stage');
     const submit = getAndCheckApplyButton(result);
 
     await fireEvent.change(statusSelector, {
@@ -161,7 +161,7 @@ async function renderChangeDateAndStatus(line: string, elementId: string, newVal
     const inputElement = getAndCheckRenderedElement<HTMLInputElement>(container, elementId);
     await editInputElement(inputElement, newValue);
 
-    const statusSelector = getAndCheckRenderedElement<HTMLSelectElement>(container, 'status-type');
+    const statusSelector = getAndCheckRenderedElement<HTMLSelectElement>(container, 'status-stage');
     await fireEvent.change(statusSelector, {
         target: { value: newStatusSymbol },
     });
@@ -183,7 +183,7 @@ describe('Task rendering', () => {
     function testElementRender(line: string, elementId: string, expectedElementValue: string) {
         const task = taskFromLine({ line, path: '' });
 
-        const onSubmit = (_: Task[]): void => {};
+        const onSubmit = (_: Task[]): void => { };
         const { container } = renderAndCheckModal(task, onSubmit);
 
         const inputElement = getAndCheckRenderedElement<HTMLInputElement>(container, elementId);
@@ -571,9 +571,9 @@ describe('Task editing', () => {
         });
     });
 
-    describe('OnCompletion editing', () => {
-        it('should retain any OnCompletion value', async () => {
-            // We cannot yet edit the OnCompletion in the modal.
+    describe('OnHook editing', () => {
+        it('should retain any OnHook value', async () => {
+            // We cannot yet edit the OnHook in the modal.
             // So for now, just test to ensure that any initial value is retained.
             expect(await editFieldAndSave('- [ ] description  🏁 delete', 'start', '2024-01-01')).toEqual(
                 '- [ ] description 🏁 delete 🛫 2024-01-01',
@@ -661,7 +661,7 @@ describe('Edit Modal HTML snapshot tests', () => {
         // Populate task a valid and an invalid date. Note that the valid date value
         // is not visible in the HTML output.
         const task = taskFromLine({ line: '- [ ] absolutely to do 🛫 2024-01-01 ⏳ 2024-02-33', path: '' });
-        const onSubmit = () => {};
+        const onSubmit = () => { };
         const allTasks = [task];
         const { container } = renderAndCheckModal(task, onSubmit, allTasks);
 

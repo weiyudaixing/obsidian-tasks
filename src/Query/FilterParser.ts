@@ -12,14 +12,14 @@ import { ScheduledDateField } from './Filter/ScheduledDateField';
 import { StartDateField } from './Filter/StartDateField';
 import { HappensDateField } from './Filter/HappensDateField';
 import { RecurringField } from './Filter/RecurringField';
-import { StatusField } from './Filter/StatusField';
 import { TagsField } from './Filter/TagsField';
 import { BooleanField } from './Filter/BooleanField';
 import { FilenameField } from './Filter/FilenameField';
 import { UrgencyField } from './Filter/UrgencyField';
 import { StatusNameField } from './Filter/StatusNameField';
-import { StatusTypeField } from './Filter/StatusTypeField';
-
+import { StatusObjectClassField } from './Filter/StatusObjectClassField';
+import { StatusStageField } from './Filter/StatusStageField';
+import { StatusField } from './Filter/StatusField';
 import { RecurrenceField } from './Filter/RecurrenceField';
 import type { FilterOrErrorMessage } from './Filter/FilterOrErrorMessage';
 import type { Sorter } from './Sort/Sorter';
@@ -40,8 +40,9 @@ import { RandomField } from './Filter/RandomField';
 // may contain them, and keep BooleanField last.
 export const fieldCreators: EndsWith<BooleanField> = [
     // NEW_QUERY_INSTRUCTION_EDIT_REQUIRED
+    () => new StatusObjectClassField(),
     () => new StatusNameField(), // status.name is before status, to avoid ambiguity
-    () => new StatusTypeField(), // status.type is before status, to avoid ambiguity
+    () => new StatusStageField(), // status.stage is before status, to avoid ambiguity
     () => new StatusField(),
     () => new RecurringField(),
     () => new PriorityField(),

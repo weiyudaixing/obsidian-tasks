@@ -8,11 +8,11 @@ describe('StatusRegistryReport', function () {
         // Arrange
 
         const customStatusesData: StatusCollection = [
-            ['/', 'In Progress', 'x', 'IN_PROGRESS'],
-            ['-', 'Cancelled', ' ', 'CANCELLED'],
-            ['Q', 'Question', 'A', 'NON_TASK'],
-            ['A', 'Answer', 'Q', 'NON_TASK'],
-            ['', '', '', 'TODO'], // A new, unedited status
+            ['Task', '/', 'In Progress', 'x', 'IN_PROGRESS'],
+            ['Task', '-', 'Cancelled', ' ', 'CANCELLED'],
+            ['Question', 'Q', 'Question', 'A', 'TODO'],
+            ['Question', 'A', 'Answer', 'Q', 'DONE'],
+            ['Task', '', '', '', 'TODO'], // A new, unedited status
         ];
         const { statusSettings, statusRegistry } = createStatuses(coreStatusesData, customStatusesData);
 

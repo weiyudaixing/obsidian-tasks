@@ -215,7 +215,7 @@ A task is `blocking` if:
 Note that:
 
 - Only direct dependencies are considered.
-- Tasks with status type `DONE`, `CANCELLED` or `NON_TASK` are never treated as `blocking`.
+- Tasks with status stage `DONE`, `CANCELLED` or `NON_TASK` are never treated as `blocking`.
 
 Search for `blocking` tasks with:
 
@@ -243,7 +243,7 @@ A task is `blocked` if:
 Note that:
 
 - Only direct dependencies are considered.
-- Tasks with status type `DONE`, `CANCELLED` or `NON_TASK` are never treated as `blocked`.
+- Tasks with status stage `DONE`, `CANCELLED` or `NON_TASK` are never treated as `blocked`.
 
 Search for `blocked` tasks with:
 

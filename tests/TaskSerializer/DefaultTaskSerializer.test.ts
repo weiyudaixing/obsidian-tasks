@@ -11,7 +11,7 @@ import {
     allTaskPluginEmojis,
 } from '../../src/TaskSerializer/DefaultTaskSerializer';
 import { TaskBuilder } from '../TestingTools/TaskBuilder';
-import { OnCompletion } from '../../src/Task/OnCompletion';
+import { OnHook } from '../../src/Task/OnHook';
 import { Priority } from '../../src/Task/Priority';
 
 jest.mock('obsidian');
@@ -52,7 +52,7 @@ describe.each(symbolMap)("DefaultTaskSerializer with '$taskFormat' symbols", ({ 
         startDateSymbol,
         createdDateSymbol,
         recurrenceSymbol,
-        onCompletionSymbol,
+        onHookSymbol,
         scheduledDateSymbol,
         dueDateSymbol,
         doneDateSymbol,
@@ -132,11 +132,11 @@ describe.each(symbolMap)("DefaultTaskSerializer with '$taskFormat' symbols", ({ 
             });
         });
 
-        describe('should parse onCompletion', () => {
+        describe('should parse onHook', () => {
             it('should parse delete action', () => {
-                const onCompletion = `${onCompletionSymbol} delete`;
-                const taskDetails = deserialize(onCompletion);
-                expect(taskDetails).toMatchTaskDetails({ onCompletion: OnCompletion.Delete });
+                const onHook = `${onHookSymbol} delete`;
+                const taskDetails = deserialize(onHook);
+                expect(taskDetails).toMatchTaskDetails({ onHook: OnHook.Delete });
             });
         });
 
@@ -257,10 +257,10 @@ describe.each(symbolMap)("DefaultTaskSerializer with '$taskFormat' symbols", ({ 
             expect(serialized).toEqual(` ${recurrenceSymbol} every day`);
         });
 
-        it('should serialize onCompletion', () => {
-            const task = new TaskBuilder().onCompletion(OnCompletion.Delete).description('').build();
+        it('should serialize onHook', () => {
+            const task = new TaskBuilder().onHook(OnHook.Delete).description('').build();
             const serialized = serialize(task);
-            expect(serialized).toEqual(` ${onCompletionSymbol} delete`);
+            expect(serialized).toEqual(` ${onHookSymbol} delete`);
         });
 
         it('should serialize depends on', () => {

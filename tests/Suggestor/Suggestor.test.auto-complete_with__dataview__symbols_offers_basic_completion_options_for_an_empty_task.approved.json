@@ -55,7 +55,7 @@
     "appendText": "dependsOn:: "
   },
   {
-    "displayText": "onCompletion:: on completion",
-    "appendText": "onCompletion:: "
+    "displayText": "onHook:: on hook",
+    "appendText": "onHook:: "
   }
 ]

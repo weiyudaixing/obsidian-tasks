@@ -6,14 +6,14 @@ import type { StatusCollection } from '../../Statuses/StatusCollection';
  */
 export function ebullientworksSupportedStatuses() {
     const zzz: StatusCollection = [
-        [' ', 'Unchecked', 'x', 'TODO'],
-        ['x', 'Checked', ' ', 'DONE'],
-        ['-', 'Cancelled', ' ', 'CANCELLED'],
-        ['/', 'In Progress', 'x', 'IN_PROGRESS'],
-        ['>', 'Deferred', 'x', 'TODO'],
-        ['!', 'Important', 'x', 'TODO'],
-        ['?', 'Question', 'x', 'TODO'],
-        ['r', 'Review', 'x', 'TODO'],
+        ['Task', ' ', 'Unchecked', 'x', 'TODO'],
+        ['Task', 'x', 'Checked', ' ', 'DONE'],
+        ['Task', '-', 'Cancelled', ' ', 'CANCELLED'],
+        ['Task', '/', 'In Progress', 'x', 'IN_PROGRESS'],
+        ['Task', '>', 'Deferred', 'x', 'TODO'],
+        ['Task', '!', 'Important', 'x', 'TODO'],
+        ['Task', '?', 'Question', 'x', 'TODO'],
+        ['Task', 'r', 'Review', 'x', 'TODO'],
     ];
     return zzz;
 }

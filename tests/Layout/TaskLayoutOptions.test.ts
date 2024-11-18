@@ -11,7 +11,7 @@ describe('TaskLayoutOptions', () => {
             dependsOn
             priority
             recurrenceRule
-            onCompletion
+            onHook
             createdDate
             startDate
             scheduledDate
@@ -67,7 +67,7 @@ describe('TaskLayoutOptions', () => {
             dependsOn
             priority
             recurrenceRule
-            onCompletion
+            onHook
             createdDate
             startDate
             scheduledDate
@@ -86,7 +86,7 @@ describe('TaskLayoutOptions', () => {
             dependsOn
             priority
             recurrenceRule
-            onCompletion
+            onHook
             createdDate
             startDate
             scheduledDate
@@ -141,7 +141,7 @@ describe('TaskLayoutOptions', () => {
             dependsOn
             priority
             recurrenceRule
-            onCompletion
+            onHook
             createdDate
             startDate
             scheduledDate

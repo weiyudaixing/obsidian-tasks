@@ -50,7 +50,7 @@ Tasks' setting pane has a one-click button to add the following information, rep
 
 <!-- placeholder to force blank line before included text --><!-- include: DocsSamplesForStatuses.test.Theme_Border_Table.approved.md -->
 
-| Status Symbol | Next Status Symbol | Status Name<br>`status.name includes...`<br>`sort by status.name`<br>`group by status.name` | Status Type<br>`status.type is...`<br>`sort by status.type`<br>`group by status.type` | Needs Custom Styling |
+| Status Symbol | Next Status Symbol | Status Name<br>`status.name includes...`<br>`sort by status.name`<br>`group by status.name` | Status Stage<br>`status.stage is...`<br>`sort by status.stage`<br>`group by status.stage` | Needs Custom Styling |
 | ----- | ----- | ----- | ----- | ----- |
 | `space` | `x` | To Do | `TODO` | No |
 | `/` | `x` | In Progress | `IN_PROGRESS` | Yes |

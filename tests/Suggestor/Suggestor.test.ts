@@ -219,7 +219,7 @@ ${JSON.stringify(suggestions[0], null, 4)}
         recurrenceSymbol,
         idSymbol,
         dependsOnSymbol,
-        onCompletionSymbol,
+        onHookSymbol,
     } = symbols;
 
     it('offers basic completion options for an empty task', () => {
@@ -272,8 +272,8 @@ ${JSON.stringify(suggestions[0], null, 4)}
         verifyFirstSuggestions(lines, 'How due date suggestions are affected by what the user has typed:');
     });
 
-    it('offers OnCompletion completions', () => {
-        const line = `- [ ] some task ${onCompletionSymbol}`;
+    it('offers OnHook completions', () => {
+        const line = `- [ ] some task ${onHookSymbol}`;
         shouldStartWithSuggestionsEqualling(line, ['delete', 'keep']);
     });
 
@@ -487,7 +487,7 @@ ${JSON.stringify(suggestions[0], null, 4)}
             `- [ ] some task ${dueDateSymbol} `,
             `- [ ] some task ${scheduledDateSymbol} `,
             `- [ ] some task ${startDateSymbol} `,
-            `- [ ] some task ${onCompletionSymbol} `,
+            `- [ ] some task ${onHookSymbol} `,
         ];
         if (global.SHOW_DEPENDENCY_SUGGESTIONS) {
             lines.push(`- [ ] some task ${idSymbol} `);

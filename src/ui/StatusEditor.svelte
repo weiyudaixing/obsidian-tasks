@@ -63,7 +63,7 @@
 <select
     bind:value={statusSymbol}
     on:change={_onStatusChange}
-    id="status-type"
+    id="status-stage"
     class="status-editor-status-selector"
     {accesskey}
 >

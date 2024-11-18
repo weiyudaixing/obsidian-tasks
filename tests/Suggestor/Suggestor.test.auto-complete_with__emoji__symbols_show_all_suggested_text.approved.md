@@ -13,7 +13,7 @@
 | ➕ created today (2022-07-11) | ➕ 2022-07-11  |
 | 🆔 id | 🆔  |
 | ⛔ depends on id | ⛔  |
-| 🏁 on completion | 🏁  |
+| 🏁 on hook | 🏁  |
 | every | 🔁 every  |
 | every day | 🔁 every day  |
 | every week | 🔁 every week  |

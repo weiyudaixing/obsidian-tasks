@@ -41,7 +41,7 @@ linkStyle default stroke:gray
 
 <!-- placeholder to force blank line before included text --><!-- include: DocsSamplesForStatuses.test.DefaultStatuses_todo-in_progress-done.approved.md -->
 
-| Status Symbol | Next Status Symbol | Status Name | Status Type | Needs Custom Styling |
+| Status Symbol | Next Status Symbol | Status Name | Status Stage | Needs Custom Styling |
 | ----- | ----- | ----- | ----- | ----- |
 | `space` | `/` | Todo | `TODO` | No |
 | `/` | `x` | In Progress | `IN_PROGRESS` | Yes |
@@ -78,7 +78,7 @@ linkStyle default stroke:gray
 
 <!-- placeholder to force blank line before included text --><!-- include: DocsSamplesForStatuses.test.DefaultStatuses_important-cycle.approved.md -->
 
-| Status Symbol | Next Status Symbol | Status Name | Status Type | Needs Custom Styling |
+| Status Symbol | Next Status Symbol | Status Name | Status Stage | Needs Custom Styling |
 | ----- | ----- | ----- | ----- | ----- |
 | `!` | `D` | Important | `TODO` | Yes |
 | `D` | `X` | Doing - Important | `IN_PROGRESS` | Yes |
@@ -92,7 +92,7 @@ If I'm brain-storming ideas for things I am stuck on, writing a list of Pros and
 
 Happily, some themes use `P` and `C` for these. Others use `p` and `c`.
 
-Either way, I can make them toggle to each other, and by giving them the type `NON_TASK`, I can exclude them from my Tasks searches, as I don't see them as actionable.
+Either way, I can make them toggle to each other, and by giving them the stage `NON_TASK`, I can exclude them from my Tasks searches, as I don't see them as actionable.
 
 <!-- include: DocsSamplesForStatuses.test.DefaultStatuses_pro-con-cycle.approved.mermaid.md -->
 ```mermaid
@@ -115,7 +115,7 @@ linkStyle default stroke:gray
 
 <!-- placeholder to force blank line before included text --><!-- include: DocsSamplesForStatuses.test.DefaultStatuses_pro-con-cycle.approved.md -->
 
-| Status Symbol | Next Status Symbol | Status Name | Status Type | Needs Custom Styling |
+| Status Symbol | Next Status Symbol | Status Name | Status Stage | Needs Custom Styling |
 | ----- | ----- | ----- | ----- | ----- |
 | `P` | `C` | Pro | `NON_TASK` | Yes |
 | `C` | `P` | Con | `NON_TASK` | Yes |
@@ -126,7 +126,7 @@ linkStyle default stroke:gray
 
 Suppose you have some statuses which are purely for display purposes: they will definitely never be used for actionable tasks, and if you click on one by mistake, you do not want it to toggle or get a Done date.
 
-There is a nice property that statuses with the same Status Symbol and Next Status Symbol - and a type other than `DONE` - do nothing when they are toggled.
+There is a nice property that statuses with the same Status Symbol and Next Status Symbol - and a stage other than `DONE` - do nothing when they are toggled.
 
 Here are some statuses from the ITS Theme where this behaviour might be useful.
 
@@ -157,7 +157,7 @@ linkStyle default stroke:gray
 
 <!-- placeholder to force blank line before included text --><!-- include: DocsSamplesForStatuses.test.DefaultStatuses_toggle-does-nothing.approved.md -->
 
-| Status Symbol | Next Status Symbol | Status Name | Status Type | Needs Custom Styling |
+| Status Symbol | Next Status Symbol | Status Name | Status Stage | Needs Custom Styling |
 | ----- | ----- | ----- | ----- | ----- |
 | `b` | `b` | Bookmark | `NON_TASK` | Yes |
 | `E` | `E` | Example | `NON_TASK` | Yes |

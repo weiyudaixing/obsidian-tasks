@@ -45,7 +45,7 @@ export default class TasksPlugin extends Plugin {
             workspace: this.app.workspace,
         });
 
-        // Load configured status types.
+        // Load configured status stages.
         await this.loadTaskStatuses();
 
         const events = new TasksEvents({ obsidianEvents: this.app.workspace });

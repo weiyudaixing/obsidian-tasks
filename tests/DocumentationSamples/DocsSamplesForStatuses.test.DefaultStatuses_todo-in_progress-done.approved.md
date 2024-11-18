@@ -1,6 +1,6 @@
 <!-- placeholder to force blank line before included text -->
 
-| Status Symbol | Next Status Symbol | Status Name | Status Type | Needs Custom Styling |
+| Status Symbol | Next Status Symbol | Status Name | Status Stage | Needs Custom Styling |
 | ----- | ----- | ----- | ----- | ----- |
 | `space` | `/` | Todo | `TODO` | No |
 | `/` | `x` | In Progress | `IN_PROGRESS` | Yes |

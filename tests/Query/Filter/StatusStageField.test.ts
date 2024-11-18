@@ -1,11 +1,11 @@
-import { StatusTypeField } from '../../../src/Query/Filter/StatusTypeField';
+import { StatusStageField } from '../../../src/Query/Filter/StatusStageField';
 import {
     expectTaskComparesAfter,
     expectTaskComparesBefore,
     expectTaskComparesEqual,
 } from '../../CustomMatchers/CustomMatchersForSorting';
 import { TaskBuilder } from '../../TestingTools/TaskBuilder';
-import { StatusType } from '../../../src/Statuses/StatusConfiguration';
+import { StatusStage } from '../../../src/Statuses/StatusConfiguration';
 import { Status } from '../../../src/Statuses/Status';
 import * as FilterParser from '../../../src/Query/FilterParser';
 import { fromLine } from '../../TestingTools/TestHelpers';
@@ -18,7 +18,7 @@ const doneTask = fromLine({ line: '- [x] Done' });
 const cancTask = fromLine({ line: '- [-] Cancelled' });
 const unknTask = fromLine({ line: '- [%] Unknown' });
 const non_Task = new TaskBuilder()
-    .statusValues('^', 'non-task', 'x', false, StatusType.NON_TASK)
+    .statusValues('Task', '^', 'non-task', 'x', false, StatusStage.NON_TASK)
     .description('Non-task')
     .build();
 const emptTask = new TaskBuilder().status(Status.EMPTY).description('Empty task').build();
@@ -26,7 +26,7 @@ const emptTask = new TaskBuilder().status(Status.EMPTY).description('Empty task'
 describe('status.name', () => {
     it('value', () => {
         // Arrange
-        const filter = new StatusTypeField();
+        const filter = new StatusStageField();
 
         // Assert
         expect(filter.value(cancTask)).toStrictEqual('CANCELLED');
@@ -37,9 +37,9 @@ describe('status.name', () => {
         expect(filter.value(unknTask)).toStrictEqual('TODO');
     });
 
-    it('status.type is', () => {
+    it('status.stage is', () => {
         // Arrange
-        const filter = new StatusTypeField().createFilterOrErrorMessage('status.type is IN_PROGRESS');
+        const filter = new StatusStageField().createFilterOrErrorMessage('status.stage is IN_PROGRESS');
 
         // Assert
         expect(filter).toBeValid();
@@ -47,9 +47,9 @@ describe('status.name', () => {
         expect(filter).not.toMatchTask(todoTask);
     });
 
-    it('status.type is not', () => {
+    it('status.stage is not', () => {
         // Arrange
-        const filter = new StatusTypeField().createFilterOrErrorMessage('status.type is not IN_PROGRESS');
+        const filter = new StatusStageField().createFilterOrErrorMessage('status.stage is not IN_PROGRESS');
 
         // Assert
         expect(filter).toBeValid();
@@ -57,9 +57,9 @@ describe('status.name', () => {
         expect(filter).toMatchTask(todoTask);
     });
 
-    it('status.type is - works with incorrect case', () => {
+    it('status.stage is - works with incorrect case', () => {
         // Arrange
-        const filter = new StatusTypeField().createFilterOrErrorMessage('status.type is in_progress');
+        const filter = new StatusStageField().createFilterOrErrorMessage('status.stage is in_progress');
 
         // Assert
         expect(filter).toBeValid();
@@ -69,7 +69,7 @@ describe('status.name', () => {
 
     it('status-name is not valid', () => {
         // Arrange
-        const filter = new StatusTypeField().createFilterOrErrorMessage('status-type is NON_TASK');
+        const filter = new StatusStageField().createFilterOrErrorMessage('status-stage is NON_TASK');
 
         // Assert
         // Check that the '.' in status.name is interpreted exactly as a dot.
@@ -78,41 +78,41 @@ describe('status.name', () => {
 
     it('status.name with invalid line is parsed and user sees helpful message', () => {
         // Arrange
-        const filter = FilterParser.parseFilter('status.type gobbledygook');
+        const filter = FilterParser.parseFilter('status.stage gobbledygook');
 
         // Assert
         expect(filter).not.toBeValid();
         expect(filter?.error).toMatchInlineSnapshot(`
-            "Invalid status.type instruction: 'status.type gobbledygook'.
+            "Invalid status.stage instruction: 'status.stage gobbledygook'.
                 Allowed options: 'is' and 'is not' (without quotes).
-                Allowed values:  TODO DONE IN_PROGRESS CANCELLED NON_TASK
+                Allowed values:  TODO IN_PROGRESS DONE ARCHIVED CANCELLED HOOK NON_TASK
                                  Note: values are case-insensitive,
                                        so 'in_progress' works too, for example.
-                Example:         status.type is not NON_TASK"
+                Example:         status.stage is not NON_TASK"
         `);
     });
 });
 
 describe('sorting by status.name', () => {
     it('supports Field sorting methods correctly', () => {
-        const field = new StatusTypeField();
+        const field = new StatusStageField();
         expect(field.supportsSorting()).toEqual(true);
     });
 
     it('should parse sort line correctly', () => {
-        expect(new StatusTypeField().createSorterFromLine('sort by status.type reverse')).not.toBeNull();
-        expect(new StatusTypeField().createSorterFromLine('sort by status-type reverse')).toBeNull();
+        expect(new StatusStageField().createSorterFromLine('sort by status.stage reverse')).not.toBeNull();
+        expect(new StatusStageField().createSorterFromLine('sort by status-stage reverse')).toBeNull();
     });
 
     it('sort by status.name', () => {
         // Arrange
-        const sorter = new StatusTypeField().createNormalSorter();
+        const sorter = new StatusStageField().createNormalSorter();
 
         // Assert
         expectTaskComparesEqual(sorter, cancTask, cancTask);
         expectTaskComparesEqual(sorter, todoTask, unknTask); // Unknown treated as TODO
 
-        // Most actionable type first..
+        // Most actionable stage first..
         expectTaskComparesBefore(sorter, inprTask, todoTask);
         expectTaskComparesBefore(sorter, todoTask, doneTask);
         expectTaskComparesBefore(sorter, doneTask, cancTask);
@@ -125,7 +125,7 @@ describe('sorting by status.name', () => {
 
     it('sort by status.name reverse', () => {
         // Arrange
-        const sorter = new StatusTypeField().createReverseSorter();
+        const sorter = new StatusStageField().createReverseSorter();
 
         // Assert
         expectTaskComparesEqual(sorter, cancTask, cancTask);
@@ -143,36 +143,36 @@ describe('sorting by status.name', () => {
     });
 });
 
-describe('grouping by status.type', () => {
+describe('grouping by status.stage', () => {
     it('supports Field grouping methods correctly', () => {
-        expect(new StatusTypeField()).toSupportGroupingWithProperty('status.type');
+        expect(new StatusStageField()).toSupportGroupingWithProperty('status.stage');
     });
 
-    it('group by status.type', () => {
+    it('group by status.stage', () => {
         // Arrange
-        const grouper = new StatusTypeField().createNormalGrouper();
+        const grouper = new StatusStageField().createNormalGrouper();
 
         // // Assert
         expect({ grouper, tasks: [inprTask] }).groupHeadingsToBe(['%%1%%IN_PROGRESS']);
         expect({ grouper, tasks: [todoTask] }).groupHeadingsToBe(['%%2%%TODO']);
         expect({ grouper, tasks: [unknTask] }).groupHeadingsToBe(['%%2%%TODO']);
         expect({ grouper, tasks: [doneTask] }).groupHeadingsToBe(['%%3%%DONE']);
-        expect({ grouper, tasks: [cancTask] }).groupHeadingsToBe(['%%4%%CANCELLED']);
+        expect({ grouper, tasks: [cancTask] }).groupHeadingsToBe(['%%5%%CANCELLED']);
         expect({ grouper, tasks: [non_Task] }).groupHeadingsToBe(['%%5%%NON_TASK']);
         expect({ grouper, tasks: [emptTask] }).groupHeadingsToBe(['%%6%%EMPTY']); // won't be seen by users
     });
 
-    it('should sort groups for StatusTypeField', () => {
-        const grouper = new StatusTypeField().createNormalGrouper();
-        const tasks = SampleTasks.withAllStatusTypes();
+    it('should sort groups for StatusStageField', () => {
+        const grouper = new StatusStageField().createNormalGrouper();
+        const tasks = SampleTasks.withAllStatusStages();
 
         expect({ grouper, tasks }).groupHeadingsToBe([
             '%%1%%IN_PROGRESS',
             '%%2%%TODO',
             '%%3%%DONE',
-            '%%4%%CANCELLED',
-            '%%5%%NON_TASK',
-            '%%6%%EMPTY',
+            '%%5%%CANCELLED',
+            '%%6%%NON_TASK',
+            '%%7%%EMPTY',
         ]);
     });
 });

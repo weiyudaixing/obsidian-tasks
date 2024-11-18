@@ -92,9 +92,9 @@ export function makeDefaultSuggestionBuilder(
             );
         }
 
-        // add on completion suggestions if relevant
+        // add on hook suggestions if relevant
         suggestions = suggestions.concat(
-            addOnCompletionOptionSuggestions(symbols.onCompletionSymbol, maxGenericSuggestions, parameters),
+            addOnHookOptionSuggestions(symbols.onHookSymbol, maxGenericSuggestions, parameters),
         );
 
         // add task property suggestions ('due', 'recurrence' etc)
@@ -161,7 +161,7 @@ function addTaskPropertySuggestions(
         addField(genericSuggestions, line, symbols.dependsOnSymbol, 'depends on id');
     }
 
-    addField(genericSuggestions, line, symbols.onCompletionSymbol, 'on completion');
+    addField(genericSuggestions, line, symbols.onHookSymbol, 'on hook');
 
     const matchingSuggestions = filterGeneralSuggestionsForWordAtCursor(genericSuggestions, parameters);
 
@@ -241,7 +241,7 @@ function filterGeneralSuggestionsForWordAtCursor(genericSuggestions: SuggestInfo
             for (const filtered of filteredSuggestions) {
                 const insertSkipValue =
                     parameters.dataviewMode &&
-                    (filtered.displayText.includes('priority') || filtered.displayText.includes('created'))
+                        (filtered.displayText.includes('priority') || filtered.displayText.includes('created'))
                         ? wordUnderCursor.length + parameters.insertSkip
                         : wordUnderCursor.length;
                 matchingSuggestions.push({
@@ -418,10 +418,10 @@ function addRecurrenceValueSuggestions(recurrenceSymbol: string, parameters: Sug
 }
 
 /*
- * If the cursor is located in a section that should be followed by an OnCompletion action, suggest options
+ * If the cursor is located in a section that should be followed by an OnHook action, suggest options
  * for what to enter as the action.
  */
-function addOnCompletionOptionSuggestions(
+function addOnHookOptionSuggestions(
     symbol: string,
     maxGenericSuggestions: number,
     parameters: SuggestorParameters,

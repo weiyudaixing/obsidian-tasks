@@ -60,20 +60,26 @@ span.task-priority {
 }
 
 /* A special color for the 'due' component if it's for today, and still needs work on */
-.task-list-item[data-task-status-type="TODO"] .task-due[data-task-due="today"] span,
-.task-list-item[data-task-status-type="IN_PROGRESS"] .task-due[data-task-due="today"] span {
+.task-list-item[data-task-status-stage="TODO"] .task-due[data-task-due="today"] span,
+.task-list-item[data-task-status-stage="IN_PROGRESS"] .task-due[data-task-due="today"] span {
     background: var(--color-cyan);
     border-radius: 10px;
     padding: 2px 8px;
 }
 
 /* A special color for overdue due dates, for tasks that still need work on */
-.task-list-item[data-task-status-type="TODO"] .task-due[data-task-due^="past-"] span,
-.task-list-item[data-task-status-type="IN_PROGRESS"] .task-due[data-task-due^="past-"] span {
+.task-list-item[data-task-status-stage="TODO"] .task-due[data-task-due^="past-"] span,
+.task-list-item[data-task-status-stage="IN_PROGRESS"] .task-due[data-task-due^="past-"] span {
     background: var(--color-pink);
     border-radius: 10px;
     padding: 2px 8px;
 }
+/* A special color for archived objects */
+/* .task-list-item[data-task-status-stage="Archived"][data-task-due^="archived-"] span {
+    background: var(--color-grey);
+    border-radius: 10px;
+    padding: 2px 8px;
+} */
 
 /* Make checkboxes a circle instead of a square */
 ul > li.plugin-tasks-list-item .task-list-item-checkbox {

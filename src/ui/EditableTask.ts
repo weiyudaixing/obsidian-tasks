@@ -3,13 +3,13 @@ import { parseTypedDateForSaving } from '../DateTime/DateTools';
 import { PriorityTools } from '../lib/PriorityTools';
 import { replaceTaskWithTasks } from '../Obsidian/File';
 import type { Status } from '../Statuses/Status';
-import type { OnCompletion } from '../Task/OnCompletion';
+import type { OnHook } from '../Task/OnHook';
 import { Occurrence } from '../Task/Occurrence';
 import { Priority } from '../Task/Priority';
 import { Recurrence } from '../Task/Recurrence';
 import { Task } from '../Task/Task';
 import { addDependencyToParent, ensureTaskHasId, generateUniqueId, removeDependency } from '../Task/TaskDependency';
-import { StatusType } from '../Statuses/StatusConfiguration';
+import { StatusStage } from '../Statuses/StatusConfiguration';
 
 /**
  * {@link Task} objects are immutable. This class allows to create a mutable object from a {@link Task}, apply the edits,
@@ -25,7 +25,7 @@ export class EditableTask {
     status: Status;
     priority: string;
     recurrenceRule: string;
-    onCompletion: OnCompletion;
+    onHook: OnHook;
     createdDate: string;
     startDate: string;
     scheduledDate: string;
@@ -44,7 +44,7 @@ export class EditableTask {
         description: string;
         status: Status;
         priority: string;
-        onCompletion: OnCompletion;
+        onHook: OnHook;
         recurrenceRule: string;
         createdDate: string;
         startDate: string;
@@ -62,7 +62,7 @@ export class EditableTask {
         this.description = editableTask.description;
         this.status = editableTask.status;
         this.priority = editableTask.priority;
-        this.onCompletion = editableTask.onCompletion;
+        this.onHook = editableTask.onHook;
         this.recurrenceRule = editableTask.recurrenceRule;
         this.createdDate = editableTask.createdDate;
         this.startDate = editableTask.startDate;
@@ -123,7 +123,7 @@ export class EditableTask {
             status: task.status,
             priority,
             recurrenceRule: task.recurrence ? task.recurrence.toText() : '',
-            onCompletion: task.onCompletion,
+            onHook: task.onHook,
             createdDate: task.created.formatAsDate(),
             startDate: task.start.formatAsDate(),
             scheduledDate: task.scheduled.formatAsDate(),
@@ -167,7 +167,7 @@ export class EditableTask {
             });
         }
 
-        const parsedOnCompletion: OnCompletion = this.onCompletion;
+        const parsedOnHook: OnHook = this.onHook;
 
         const blockedByWithIds = [];
 
@@ -197,7 +197,7 @@ export class EditableTask {
             description,
             status: task.status,
             priority: PriorityTools.priorityValue(this.priority),
-            onCompletion: parsedOnCompletion,
+            onHook: parsedOnHook,
             recurrence,
             startDate,
             scheduledDate,
@@ -221,7 +221,7 @@ export class EditableTask {
 
         // Then apply the new status to the updated task, in case a new recurrence
         // needs to be created.
-        const today = this.inferTodaysDate(this.status.type, doneDate, cancelledDate);
+        const today = this.inferTodaysDate(this.status.stage, doneDate, cancelledDate);
         return updatedTask.handleNewStatusWithRecurrenceInUsersOrder(this.status, today);
     }
 
@@ -231,12 +231,12 @@ export class EditableTask {
      * Here we calculate that inferred date.
      */
     private inferTodaysDate(
-        newStatusType: StatusType,
+        newStatusStage: StatusStage,
         doneDate: moment.Moment | null,
         cancelledDate: moment.Moment | null,
     ) {
-        if (newStatusType === StatusType.DONE && doneDate !== null) {
-            // The status type of the edited task is DONE, so we need to preserve the
+        if (newStatusStage === StatusStage.DONE && doneDate !== null) {
+            // The status stage of the edited task is DONE, so we need to preserve the
             // Done Date value in the modal as today's date,
             // for use in later code.
             // This is needed for scenarios including:
@@ -245,8 +245,8 @@ export class EditableTask {
             return doneDate;
         }
 
-        if (newStatusType === StatusType.CANCELLED && cancelledDate !== null) {
-            // The status type of the edited task is CANCELLED, so we need to preserve the
+        if (newStatusStage === StatusStage.CANCELLED && cancelledDate !== null) {
+            // The status stage of the edited task is CANCELLED, so we need to preserve the
             // Cancelled Date value in the modal as today's date.
             return cancelledDate;
         }

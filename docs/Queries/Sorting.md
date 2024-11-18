@@ -30,7 +30,7 @@ The following instructions are the default sort order, and they are **automatica
 
 <!-- snippet: Sort.test.Sort_save_default_sort_order.approved.text -->
 ```text
-sort by status.type
+sort by status.stage
 sort by urgency
 sort by due
 sort by priority
@@ -73,7 +73,7 @@ For more information, including adding your own customised statuses, see [[Statu
 - `sort by status` (done or todo)
 
 > [!Tip]
-> `sort by status.type` gives a much more useful sort order than `sort by status`. See [[#Status Type]] below.
+> `sort by status.stage` gives a much more useful sort order than `sort by status`. See [[#Status Stage]] below.
 
 Since Tasks 6.0.0, **[[Custom Sorting|custom sorting]] by status** is now possible.
 
@@ -84,7 +84,7 @@ sort by function !task.isDone
 ```
 
 - `sort by function` sorts `true` before `false`
-- Hence, we use `!` to negate `task.isDone`, so tasks with [[Status Types|Status Type]] `TODO` and `IN_PROGRESS` tasks are sorted **before** `DONE`, `CANCELLED` and `NON_TASK`.
+- Hence, we use `!` to negate `task.isDone`, so tasks with [[Status Stages|Status Stage]] `TODO` and `IN_PROGRESS` tasks are sorted **before** `DONE`, `CANCELLED` and `NON_TASK`.
 
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 
@@ -107,22 +107,22 @@ sort by function task.status.name
 
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 
-### Status Type
+### Status Stage
 
-- `sort by status.type` (Sorted in the order `IN_PROGRESS`, `TODO`, `DONE`, `CANCELLED` then `NON_TASK`)
+- `sort by status.stage` (Sorted in the order `IN_PROGRESS`, `TODO`, `DONE`, `CANCELLED` then `NON_TASK`)
 
 > [!released]
-`sort by status.type` was introduced in Tasks 1.23.0.
+`sort by status.stage` was introduced in Tasks 1.23.0.
 
-Since Tasks 6.0.0, **[[Custom Sorting|custom sorting]] by status types** is now possible.
+Since Tasks 6.0.0, **[[Custom Sorting|custom sorting]] by status stages** is now possible.
 
-<!-- placeholder to force blank line before included text --><!-- include: CustomSortingExamples.test.statuses_task.status.type_docs.approved.md -->
+<!-- placeholder to force blank line before included text --><!-- include: CustomSortingExamples.test.statuses_task.status.stage_docs.approved.md -->
 
 ```javascript
-sort by function task.status.type
+sort by function task.status.stage
 ```
 
-- Unlike "Sort by status.type", this sorts the status types in alphabetical order.
+- Unlike "Sort by status.stage", this sorts the status stages in alphabetical order.
 
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 

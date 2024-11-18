@@ -11,11 +11,11 @@ export class StatusField extends FilterInstructionsBasedField {
         // with any status character except space were considered by the status filter
         // instructions to be done.
         // In later versions:
-        //   StatusType.DONE counts as done
-        //   StatusType.CANCELLED counts as done
-        //   StatusType.TODO counts as not done
-        //   StatusType.IN_PROGRESS counts as not done
-        //   StatusType.NON_TASK counts as done
+        //   StatusStage.DONE counts as done
+        //   StatusStage.CANCELLED counts as done
+        //   StatusStage.TODO counts as not done
+        //   StatusStage.IN_PROGRESS counts as not done
+        //   StatusStage.NON_TASK counts as done
         this._filters.add('done', (task: Task) => task.isDone);
         this._filters.add('not done', (task: Task) => !task.isDone);
     }
@@ -30,7 +30,7 @@ export class StatusField extends FilterInstructionsBasedField {
 
     /**
      * Return a function to compare two Task objects, for use in sorting by status.
-     * TODO and IN_PROGRESS types are sorted before the other types.
+     * TODO and IN_PROGRESS stages are sorted before the other stages.
      */
     public comparator(): Comparator {
         return (a: Task, b: Task) => {
@@ -60,8 +60,8 @@ export class StatusField extends FilterInstructionsBasedField {
 
     /**
      * Return a function to name tasks, for use in grouping by status.
-     * TODO and IN_PROGRESS types are grouped in 'Todo'.
-     * Other status types are grouped in 'Done'.
+     * TODO and IN_PROGRESS stages are grouped in 'Todo'.
+     * Other status stages are grouped in 'Done'.
      */
     public grouper(): GrouperFunction {
         return (task: Task) => {

@@ -1,7 +1,7 @@
 import { verifyAsJson } from 'approvals/lib/Providers/Jest/JestApprovals';
 import { StatusSettings } from '../../src/Config/StatusSettings';
 import { Status } from '../../src/Statuses/Status';
-import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusConfiguration, StatusStage } from '../../src/Statuses/StatusConfiguration';
 import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
 import type { StatusCollection } from '../../src/Statuses/StatusCollection';
 
@@ -24,9 +24,9 @@ describe('StatusSettings', () => {
 
     function setThreeCustomStatuses(settings: StatusSettings) {
         StatusSettings.deleteAllCustomStatuses(settings);
-        const pro = new StatusConfiguration('P', 'Pro', 'C', false);
-        const imp = new StatusConfiguration('!', 'Important', 'x', false);
-        const con = new StatusConfiguration('C', 'Con', 'P', false);
+        const pro = new StatusConfiguration('Task','P', 'Pro', 'C', false);
+        const imp = new StatusConfiguration('Task','!', 'Important', 'x', false);
+        const con = new StatusConfiguration('Task','C', 'Con', 'P', false);
         StatusSettings.addStatus(settings.customStatuses, pro);
         StatusSettings.addStatus(settings.customStatuses, imp);
         StatusSettings.addStatus(settings.customStatuses, con);
@@ -40,7 +40,7 @@ describe('StatusSettings', () => {
         expect(settings.customStatuses.length).toEqual(2);
 
         // Act
-        const newStatus = new StatusConfiguration('!', 'Important', 'x', false);
+        const newStatus = new StatusConfiguration('Task','!', 'Important', 'x', false);
         StatusSettings.addStatus(settings.customStatuses, newStatus);
 
         // Assert
@@ -56,7 +56,7 @@ describe('StatusSettings', () => {
         expect(settings.customStatuses[1]).toStrictEqual(imp);
 
         // Act
-        const newImp = new StatusConfiguration('!', 'ReallyImportant', 'X', true);
+        const newImp = new StatusConfiguration('Task','!', 'ReallyImportant', 'X', true);
         StatusSettings.replaceStatus(settings.customStatuses, imp, newImp);
 
         // Assert
@@ -67,13 +67,13 @@ describe('StatusSettings', () => {
     it('should bulk-add new statuses, reporting errors', () => {
         // Arrange
         const newStatuses: StatusCollection = [
-            ['>', 'Forwarded', 'x', 'TODO'],
-            ['<', 'Schedule', 'x', 'TODO'],
-            ['?', 'Question', 'x', 'TODO'],
-            ['-', 'Dropped - should not be added as duplicate of core Cancelled', 'x', 'CANCELLED'],
-            ['>', 'Forwarded', 'x', 'TODO'], // is a duplicate so should not be added
-            ['<', 'Duplicate - should not be added as duplicate of Schedule above', 'x', 'TODO'],
-            ['', 'Empty - should not be added as no status character', 'x', 'TODO'],
+            ['Task','>', 'Forwarded', 'x', 'TODO'],
+            ['Task','<', 'Schedule', 'x', 'TODO'],
+            ['Question','?', 'Question', 'x', 'TODO'],
+            ['Task','-', 'Dropped - should not be added as duplicate of core Cancelled', 'x', 'CANCELLED'],
+            ['Task','>', 'Forwarded', 'x', 'TODO'], // is a duplicate so should not be added
+            ['Task','<', 'Duplicate - should not be added as duplicate of Schedule above', 'x', 'TODO'],
+            ['Task','', 'Empty - should not be added as no status character', 'x', 'TODO'],
         ];
         const settings = new StatusSettings();
 
@@ -125,13 +125,13 @@ describe('StatusSettings', () => {
             StatusSettings.replaceStatus(
                 settings.customStatuses,
                 s,
-                new StatusConfiguration(s.symbol, 'NONSENSE NAME', 'x', false, StatusType.DONE),
+                new StatusConfiguration(s.objectClass, s.symbol, 'NONSENSE NAME', 'x', false, StatusStage.DONE),
             );
         });
         // Add some additional custom settings.
         StatusSettings.addStatus(
             settings.customStatuses,
-            new StatusConfiguration('%', 'ANYTHING', '_', true, StatusType.NON_TASK),
+            new StatusConfiguration('Task','%', 'ANYTHING', '_', true, StatusStage.NON_TASK),
         );
 
         // Act
@@ -144,8 +144,9 @@ describe('StatusSettings', () => {
               "availableAsCommand": true,
               "name": "In Progress",
               "nextStatusSymbol": "x",
+              "objectClass": "Task",
+              "stage": "IN_PROGRESS",
               "symbol": "/",
-              "type": "IN_PROGRESS",
             }
         `);
         expect(settings.customStatuses[1]).toMatchInlineSnapshot(`
@@ -153,8 +154,9 @@ describe('StatusSettings', () => {
               "availableAsCommand": true,
               "name": "Cancelled",
               "nextStatusSymbol": " ",
+              "objectClass": "Task",
+              "stage": "CANCELLED",
               "symbol": "-",
-              "type": "CANCELLED",
             }
         `);
     });
@@ -179,7 +181,7 @@ describe('StatusSettings', () => {
         expect(settings.customStatuses.length).toEqual(3);
 
         const statusRegistry = new StatusRegistry();
-        expect(statusRegistry.registeredStatuses.length).toEqual(4);
+        expect(statusRegistry.registeredStatuses.length).toEqual(5);
 
         // Act
         StatusSettings.applyToStatusRegistry(settings, statusRegistry);
